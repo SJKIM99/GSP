@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Main">
+      <UniqueIdentifier>{e8dccf15-3bdd-4854-8dd2-f0ba5d770abc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utils">
+      <UniqueIdentifier>{37e6aaa6-0769-426b-aa67-d42e60cd791c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="WorkerThread">
+      <UniqueIdentifier>{d2fb6594-3ad8-48a7-9578-1050607d2227}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameSession">
+      <UniqueIdentifier>{9b7715e2-08c3-489a-808f-b4f6fdc4b661}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="DBThread">
+      <UniqueIdentifier>{200a581e-d723-4352-b709-2108159fa159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Protocol">
+      <UniqueIdentifier>{81390e0c-0a64-4e09-9eaa-cacf2f411723}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sector">
+      <UniqueIdentifier>{bf5df59f-22f0-404f-a586-117054fcf150}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Global">
+      <UniqueIdentifier>{93d557e1-9826-4023-b430-42eaf65c531b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="NPC">
+      <UniqueIdentifier>{eaf1bcc0-329b-4ee8-935f-37dd4eda06f3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TimerThread">
+      <UniqueIdentifier>{61271a4a-7a18-43ab-a2b8-db74a1a32463}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Sector\Socket">
+      <UniqueIdentifier>{6cb11f98-75f0-4f80-aee1-8d22bf0e24d2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameServer.cpp">
+      <Filter>Main</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="SocketManager.cpp">
+      <Filter>Sector\Socket</Filter>
+    </ClCompile>
+    <ClCompile Include="WorkerThread.cpp">
+      <Filter>WorkerThread</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSession.cpp">
+      <Filter>GameSession</Filter>
+    </ClCompile>
+    <ClCompile Include="DBThread.cpp">
+      <Filter>DBThread</Filter>
+    </ClCompile>
+    <ClCompile Include="Sector.cpp">
+      <Filter>Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="Collision.cpp">
+      <Filter>Sector</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerGlobal.cpp">
+      <Filter>Global</Filter>
+    </ClCompile>
+    <ClCompile Include="NPC.cpp">
+      <Filter>NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="TimerThread.cpp">
+      <Filter>TimerThread</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="SocketManager.h">
+      <Filter>Sector\Socket</Filter>
+    </ClInclude>
+    <ClInclude Include="WorkerThread.h">
+      <Filter>WorkerThread</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSession.h">
+      <Filter>GameSession</Filter>
+    </ClInclude>
+    <ClInclude Include="DBThread.h">
+      <Filter>DBThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Sector.h">
+      <Filter>Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="Collision.h">
+      <Filter>Sector</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerGlobal.h">
+      <Filter>Global</Filter>
+    </ClInclude>
+    <ClInclude Include="NPC.h">
+      <Filter>NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="TimerThread.h">
+      <Filter>TimerThread</Filter>
+    </ClInclude>
+    <ClInclude Include="Protocol.h">
+      <Filter>Protocol</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
