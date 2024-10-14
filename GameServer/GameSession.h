@@ -60,7 +60,7 @@ public:
 	void SendHealPacket();
 	void SendPlayerDiePacket(uint32 clientId);
 	void SendRespawnPlayerPacket(uint32 clientId);
-
+	
 public:
 	SOCKET					_socket;
 	SOCKET_STATE			_state;

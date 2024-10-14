@@ -15,6 +15,8 @@ public:
 	WorkerThread() {};
 	~WorkerThread() {};
 
+	void			Disconnect(uint32 clientId);
+
 	void			DoWork();
 	uint32			GetNewClientId();
 	void			HandlePacket(uint32 clientId, char* packet);

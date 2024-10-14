@@ -122,7 +122,7 @@ void TimerThread::DoTimer()
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_HEAL: {
-
+				if (GClients[ev.player_id] == nullptr) break;
 				if (GClients[ev.player_id]->_die.load()) break;
 
 				{

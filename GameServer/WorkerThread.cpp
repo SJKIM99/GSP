@@ -7,6 +7,39 @@
 #include "TimerThread.h"
 #include "NPC.h"
 
+void WorkerThread::Disconnect(uint32 clientId)
+{
+	auto& disconnectPlayer = GClients[clientId];
+	{
+		READ_LOCK;
+		for (int16 dy = -1; dy <= 1; ++dy) {
+			for (int16 dx = -1; dx <= 1; ++dx) {
+				int16 sectorY = disconnectPlayer->_sectorY + dy;
+				int16 sectorX = disconnectPlayer->_sectorX + dx;
+				if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+					continue;
+				}
+				const auto& currentSector = GSector->sectors[sectorY][sectorX];
+				for (const auto& id : currentSector) {
+
+					const auto& object = GClients[id];
+					if (IsNPC(id)) continue;
+					if (object->_state != SOCKET_STATE::ST_INGAME) continue;
+					if (!CanSee(object->_id, clientId)) continue;
+					object->SendRemovePlayerPacket(clientId);
+				}
+			}
+		}
+	}
+
+	{
+		WRITE_LOCK;
+		GSector->RemovePlayerInSector(clientId, GSector->GetMySector_X(disconnectPlayer->_sectorX), GSector->GetMySector_Y(disconnectPlayer->_sectorY));
+		disconnectPlayer = nullptr;
+	}
+}
+
 void WorkerThread::DoWork()
 {
 	while (true) {
@@ -21,14 +54,14 @@ void WorkerThread::DoWork()
 			if (exOver->_type == IO_TYPE::IO_ACCEPT) std::cout << "Accept Error" << endl;
 			else {
 				std::cout << "GQCS Error on CLient[" << key << "]\n";
-				//disconnect(static_cast<int>(key));
+				Disconnect(static_cast<int>(key));
 				if (exOver->_type == IO_TYPE::IO_SEND) xdelete(exOver);
 				continue;
 			}
 		}
 
 		if ((0 == numOfBytes) && ((exOver->_type == IO_TYPE::IO_RECV) || (exOver->_type == IO_TYPE::IO_SEND))) {
-			//disconnect(static_cast<int>(key));
+			Disconnect(static_cast<int>(key));
 			if (exOver->_type == IO_TYPE::IO_SEND) xdelete(exOver);
 			continue;
 		}
@@ -513,6 +546,8 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 	
 	
 }
+
+
 
 
 bool CanSee(uint32 from, uint32 to)

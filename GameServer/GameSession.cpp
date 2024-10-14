@@ -230,3 +230,4 @@ void GameSession::SendRespawnPlayerPacket(uint32 clientId)
 
 	RegisteredSend(&packet);
 }
+
