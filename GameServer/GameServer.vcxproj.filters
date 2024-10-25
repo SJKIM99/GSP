@@ -31,8 +31,11 @@
     <Filter Include="TimerThread">
       <UniqueIdentifier>{61271a4a-7a18-43ab-a2b8-db74a1a32463}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sector\Socket">
+    <Filter Include="Socket">
       <UniqueIdentifier>{6cb11f98-75f0-4f80-aee1-8d22bf0e24d2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AStar">
+      <UniqueIdentifier>{0503aa0f-91b7-46c0-b67a-66901f671940}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -43,7 +46,7 @@
       <Filter>Utils</Filter>
     </ClCompile>
     <ClCompile Include="SocketManager.cpp">
-      <Filter>Sector\Socket</Filter>
+      <Filter>Socket</Filter>
     </ClCompile>
     <ClCompile Include="WorkerThread.cpp">
       <Filter>WorkerThread</Filter>
@@ -69,13 +72,16 @@
     <ClCompile Include="TimerThread.cpp">
       <Filter>TimerThread</Filter>
     </ClCompile>
+    <ClCompile Include="AStar.cpp">
+      <Filter>AStar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="SocketManager.h">
-      <Filter>Sector\Socket</Filter>
+      <Filter>Socket</Filter>
     </ClInclude>
     <ClInclude Include="WorkerThread.h">
       <Filter>WorkerThread</Filter>
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Protocol.h">
       <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar.h">
+      <Filter>AStar</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
