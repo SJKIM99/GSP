@@ -17,13 +17,13 @@ short Sector::GetMySector_Y(short y)
 
 void Sector::AddPlayerInSector(uint32 player_id, short sector_x, short sector_y)
 {
-    WRITE_LOCK;
+    lock_guard<mutex> ll(sectorLocks[sector_y][sector_x]);
     sectors[sector_y][sector_x].insert(player_id);
 }
 
 bool Sector::UpdatePlayerInSector(uint32 player_id, short new_sector_x, short new_sector_y, short old_sector_x, short old_sector_y)
 {
-    WRITE_LOCK;
+    lock_guard<mutex> ll(sectorLocks[new_sector_x][new_sector_y]);
     if (new_sector_x != old_sector_x || new_sector_y != old_sector_y) {
         sectors[old_sector_y][old_sector_x].erase(player_id);
         sectors[new_sector_y][new_sector_x].insert(player_id);
@@ -32,8 +32,13 @@ bool Sector::UpdatePlayerInSector(uint32 player_id, short new_sector_x, short ne
     return false;
 }
 
+unordered_set<uint32> Sector::GetObjectSector(short sector_x, short sector_y)
+{
+    return sectors[sector_y][sector_x];
+}
+
 void Sector::RemovePlayerInSector(uint32 player_id, short sector_x, short sector_y)
 {
-    WRITE_LOCK;
+    lock_guard<mutex> ll(sectorLocks[sector_y][sector_x]);
     sectors[sector_y][sector_x].erase(player_id);
 }
