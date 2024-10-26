@@ -80,6 +80,8 @@ public:
 	atomic_bool				_active;
 	atomic_bool				_attack;
 
+	mutex					_stateLock;
+	mutex					_viewListLock;
 private:
 	USE_LOCK;
 };

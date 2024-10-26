@@ -28,7 +28,7 @@ public:
 	void			WakeUpNpc(uint32 npcId, uint32 wakerId);
 	void			AttackToNPC(uint32 npcId, uint32 playerId);
 private:
-	USE_LOCK;
+	//USE_LOCK;
 };
 
 bool				CanSee(uint32 from, uint32 to);

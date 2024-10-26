@@ -3,28 +3,67 @@
   "WorkspaceRootPath": "C:\\Users\\user\\Desktop\\GSP\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\AStar.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\WorkerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\AStar.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.36.32532\\INCLUDE\\XMEMORY||{3B902123-F8A7-4915-9F01-361F908088D0}|"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\GameSession.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\NPC.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\TimerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.36.32532\\INCLUDE\\XSTDDEF||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\WorkerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\GameSession.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\DBConnection.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\GameSession.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\DBConnection.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.36.32532\\INCLUDE\\UNORDERED_SET||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\GameServer.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.36.32532\\INCLUDE\\TYPE_TRAITS||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\NPC.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\Sector.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\Sector.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\TimerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\PROGRAM FILES\\MICROSOFT VISUAL STUDIO\\2022\\COMMUNITY\\VC\\TOOLS\\MSVC\\14.36.32532\\INCLUDE\\XHASH||{3B902123-F8A7-4915-9F01-361F908088D0}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\Collision.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\Collision.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -35,36 +74,12 @@
       "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\DBThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\WorkerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Lock.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\WorkerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\TimerThread.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{F03FE732-3473-4BBD-94B1-D4916C3B4A15}|GameServer\\GameServer.vcxproj|solutionrelative:GameServer\\TimerThread.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Memory.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Memory.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Container.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Container.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Allocator.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Allocator.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{CAC2B122-7251-4759-8D77-04CD547B7348}|ServerCore\\ServerCore.vcxproj|solutionrelative:ServerCore\\Lock.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
   "DocumentGroupContainers": [
@@ -74,7 +89,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 21,
           "Children": [
             {
               "$type": "Bookmark",
@@ -86,206 +101,276 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "AStar.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.cpp",
-              "RelativeDocumentMoniker": "GameServer\\AStar.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.cpp",
-              "RelativeToolTip": "GameServer\\AStar.cpp",
-              "ViewState": "AQIAAC4AAAAAAAAAAAAYwDoAAAACAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-25T15:28:15.012Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "AStar.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.h",
-              "RelativeDocumentMoniker": "GameServer\\AStar.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\AStar.h",
-              "RelativeToolTip": "GameServer\\AStar.h",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAYwCoAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-25T15:27:49.423Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 4,
-              "Title": "DBConnection.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.cpp",
-              "RelativeDocumentMoniker": "ServerCore\\DBConnection.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.cpp",
-              "RelativeToolTip": "ServerCore\\DBConnection.cpp",
-              "ViewState": "AQIAAKIAAAAAAAAAAAAAABQAAAAiAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-25T15:07:06.754Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "DBConnection.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.h",
-              "RelativeDocumentMoniker": "ServerCore\\DBConnection.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\DBConnection.h",
-              "RelativeToolTip": "ServerCore\\DBConnection.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-25T15:07:03.203Z",
+              "Title": "xstddef",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstddef",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstddef",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstddef",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xstddef",
+              "ViewState": "AQIAAGEAAAAAAAAAAAAWwGoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-26T09:07:04.124Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 11,
-              "Title": "TimerThread.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h",
-              "RelativeDocumentMoniker": "GameServer\\TimerThread.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h",
-              "RelativeToolTip": "GameServer\\TimerThread.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "NPC.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.h",
+              "RelativeDocumentMoniker": "GameServer\\NPC.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.h",
+              "RelativeToolTip": "GameServer\\NPC.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:59:30.117Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "DBThread.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.cpp",
-              "RelativeDocumentMoniker": "GameServer\\DBThread.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.cpp",
-              "RelativeToolTip": "GameServer\\DBThread.cpp",
-              "ViewState": "AQIAAAEAAAAAAAAAAAAAACAAAAAWAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:56:39.834Z",
+              "WhenOpened": "2024-10-26T08:14:12.851Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "DBThread.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.h",
-              "RelativeDocumentMoniker": "GameServer\\DBThread.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.h",
-              "RelativeToolTip": "GameServer\\DBThread.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:56:39.214Z",
+              "DocumentIndex": 1,
+              "Title": "xmemory",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xmemory",
+              "ViewState": "AQIAAJoCAAAAAAAAAAAjwKQCAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-26T07:45:20.364Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "GameSession.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.cpp",
-              "RelativeDocumentMoniker": "GameServer\\GameSession.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.cpp",
-              "RelativeToolTip": "GameServer\\GameSession.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAAIAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:56:37.111Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "GameSession.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h",
-              "RelativeDocumentMoniker": "GameServer\\GameSession.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h",
-              "RelativeToolTip": "GameServer\\GameSession.h",
-              "ViewState": "AQIAADYAAAAAAAAAAAAAAD8AAAAHAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:56:36.344Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "TimerThread.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp",
-              "RelativeDocumentMoniker": "GameServer\\TimerThread.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp",
-              "RelativeToolTip": "GameServer\\TimerThread.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:56:12.164Z",
+              "DocumentIndex": 15,
+              "Title": "xhash",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xhash",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xhash",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xhash",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\xhash",
+              "ViewState": "AQIAAIkAAAAAAAAAAAAjwJMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-26T07:42:51.676Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 8,
-              "Title": "WorkerThread.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp",
-              "RelativeDocumentMoniker": "GameServer\\WorkerThread.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp",
-              "RelativeToolTip": "GameServer\\WorkerThread.cpp",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAHAAAA",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:50:58.447Z",
+              "Title": "unordered_set",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\unordered_set",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\unordered_set",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\unordered_set",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\unordered_set",
+              "ViewState": "AQIAAOoAAAAAAAAAAAAWwPMAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-26T07:10:00.416Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "WorkerThread.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h",
-              "RelativeDocumentMoniker": "GameServer\\WorkerThread.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h",
-              "RelativeToolTip": "GameServer\\WorkerThread.h",
+              "DocumentIndex": 10,
+              "Title": "type_traits",
+              "DocumentMoniker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\type_traits",
+              "RelativeDocumentMoniker": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\type_traits",
+              "ToolTip": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\type_traits",
+              "RelativeToolTip": "..\\..\\..\\..\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\MSVC\\14.36.32532\\include\\type_traits",
+              "ViewState": "AQIAAI8IAAAAAAAAAAAAAJsIAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2024-10-26T07:08:12.393Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Collision.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Collision.h",
+              "RelativeDocumentMoniker": "GameServer\\Collision.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Collision.h",
+              "RelativeToolTip": "GameServer\\Collision.h",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:50:55.866Z",
+              "WhenOpened": "2024-10-26T07:07:48.635Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "NPC.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.cpp",
+              "RelativeDocumentMoniker": "GameServer\\NPC.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\NPC.cpp",
+              "RelativeToolTip": "GameServer\\NPC.cpp",
+              "ViewState": "AQIAAG8AAAAAAAAAAAAAAHMAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T06:59:38.124Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TimerThread.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp",
+              "RelativeDocumentMoniker": "GameServer\\TimerThread.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.cpp",
+              "RelativeToolTip": "GameServer\\TimerThread.cpp",
+              "ViewState": "AQIAAKgAAAAAAAAAAAAAAKgAAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T06:35:24.329Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "TimerThread.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h",
+              "RelativeDocumentMoniker": "GameServer\\TimerThread.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\TimerThread.h",
+              "RelativeToolTip": "GameServer\\TimerThread.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA8AAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-26T06:35:23.281Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 12,
-              "Title": "Memory.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Memory.cpp",
-              "RelativeDocumentMoniker": "ServerCore\\Memory.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Memory.cpp",
-              "RelativeToolTip": "ServerCore\\Memory.cpp",
-              "ViewState": "AQIAAAwAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "Sector.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.cpp",
+              "RelativeDocumentMoniker": "GameServer\\Sector.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.cpp",
+              "RelativeToolTip": "GameServer\\Sector.cpp",
+              "ViewState": "AQIAAAMAAAAAAAAAAAAAABcAAACDAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:50:42.807Z"
+              "WhenOpened": "2024-10-26T06:34:26.783Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 13,
-              "Title": "Container.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Container.h",
-              "RelativeDocumentMoniker": "ServerCore\\Container.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Container.h",
-              "RelativeToolTip": "ServerCore\\Container.h",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Title": "Sector.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.h",
+              "RelativeDocumentMoniker": "GameServer\\Sector.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\Sector.h",
+              "RelativeToolTip": "GameServer\\Sector.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAgAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:50:41.896Z"
+              "WhenOpened": "2024-10-26T06:34:25.794Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "Allocator.cpp",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.cpp",
-              "RelativeDocumentMoniker": "ServerCore\\Allocator.cpp",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.cpp",
-              "RelativeToolTip": "ServerCore\\Allocator.cpp",
-              "ViewState": "AQIAAA8AAAAAAAAAAAAAAAAAAAAAAAAA",
+              "DocumentIndex": 17,
+              "Title": "DBThread.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.cpp",
+              "RelativeDocumentMoniker": "GameServer\\DBThread.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.cpp",
+              "RelativeToolTip": "GameServer\\DBThread.cpp",
+              "ViewState": "AQIAABEAAAAAAAAAAAAQwBwAAAAxAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2024-10-14T09:50:23.342Z"
+              "WhenOpened": "2024-10-26T06:33:43.229Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "Allocator.h",
-              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.h",
-              "RelativeDocumentMoniker": "ServerCore\\Allocator.h",
-              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Allocator.h",
-              "RelativeToolTip": "ServerCore\\Allocator.h",
-              "ViewState": "AQIAADAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "DocumentIndex": 18,
+              "Title": "DBThread.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.h",
+              "RelativeDocumentMoniker": "GameServer\\DBThread.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\DBThread.h",
+              "RelativeToolTip": "GameServer\\DBThread.h",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAwAAAATAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2024-10-14T09:50:20.617Z"
+              "WhenOpened": "2024-10-26T06:33:42.588Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "GameSession.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.cpp",
+              "RelativeDocumentMoniker": "GameServer\\GameSession.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.cpp",
+              "RelativeToolTip": "GameServer\\GameSession.cpp",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAAEcAAAAWAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T06:33:06.613Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "GameSession.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h",
+              "RelativeDocumentMoniker": "GameServer\\GameSession.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameSession.h",
+              "RelativeToolTip": "GameServer\\GameSession.h",
+              "ViewState": "AQIAADwAAAAAAAAAAAAAAFMAAAAZAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-26T06:33:05.273Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "Lock.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.cpp",
+              "RelativeDocumentMoniker": "ServerCore\\Lock.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.cpp",
+              "RelativeToolTip": "ServerCore\\Lock.cpp",
+              "ViewState": "AQIAAEMAAAAAAAAAAAAiwE8AAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T06:25:57.441Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "Lock.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.h",
+              "RelativeDocumentMoniker": "ServerCore\\Lock.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\ServerCore\\Lock.h",
+              "RelativeToolTip": "ServerCore\\Lock.h",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAiwDsAAAACAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-26T06:25:51.65Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "GameServer.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameServer.cpp",
+              "RelativeDocumentMoniker": "GameServer\\GameServer.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\GameServer.cpp",
+              "RelativeToolTip": "GameServer\\GameServer.cpp",
+              "ViewState": "AQIAAB0AAAAAAAAAAAAQwCoAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T06:05:24.297Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "WorkerThread.cpp",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp",
+              "RelativeDocumentMoniker": "GameServer\\WorkerThread.cpp",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.cpp",
+              "RelativeToolTip": "GameServer\\WorkerThread.cpp",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAcAAAAQAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2024-10-26T05:41:26.784Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "WorkerThread.h",
+              "DocumentMoniker": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h",
+              "RelativeDocumentMoniker": "GameServer\\WorkerThread.h",
+              "ToolTip": "C:\\Users\\user\\Desktop\\GSP\\GameServer\\WorkerThread.h",
+              "RelativeToolTip": "GameServer\\WorkerThread.h",
+              "ViewState": "AQIAAAkAAAAAAAAAAAAAAB4AAAADAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2024-10-26T05:41:24.908Z",
+              "EditorCaption": ""
             }
           ]
         }

@@ -1,0 +1,46 @@
+﻿  pch.cpp
+  AStar.cpp
+C:\Users\user\Desktop\GSP\GameServer\AStar.h(35,14): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  Collision.cpp
+  DBThread.cpp
+  GameServer.cpp
+C:\Users\user\Desktop\GSP\GameServer\GameServer.cpp(35,20): warning C4018: '<': signed 또는 unsigned가 일치하지 않습니다.
+  GameSession.cpp
+C:\Users\user\Desktop\GSP\GameServer\GameSession.cpp(79,25): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+  NPC.cpp
+  Sector.cpp
+  ServerGlobal.cpp
+  SocketManager.cpp
+  TimerThread.cpp
+C:\Users\user\Desktop\GSP\GameServer\TimerThread.cpp(119,44): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+  WorkerThread.cpp
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(130,32): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(154,20): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(155,59): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(156,36): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(173,32): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(186,31): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(186,31): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(208,20): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(209,59): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(210,36): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(239,20): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(240,23): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(245,25): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(245,25): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(254,25): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(255,21): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(255,21): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(271,34): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(296,19): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(297,44): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(335,30): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(370,32): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(525,25): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(538,29): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+  코드를 생성하고 있습니다.
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\user\Desktop\GSP\GameServer\Collision.cpp(34): warning C4715: 'isCollision': 모든 제어 경로에서 값을 반환하지는 않습니다.
+  All 1286 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  코드를 생성했습니다.
+  GameServer.vcxproj -> C:\Users\user\Desktop\GSP\Binary\Release\GameServer.exe

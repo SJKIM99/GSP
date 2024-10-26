@@ -17,13 +17,13 @@ short Sector::GetMySector_Y(short y)
 
 void Sector::AddPlayerInSector(uint32 player_id, short sector_x, short sector_y)
 {
-    WRITE_LOCK;
+   // WRITE_LOCK;
     sectors[sector_y][sector_x].insert(player_id);
 }
 
 bool Sector::UpdatePlayerInSector(uint32 player_id, short new_sector_x, short new_sector_y, short old_sector_x, short old_sector_y)
 {
-    WRITE_LOCK;
+   // WRITE_LOCK;
     if (new_sector_x != old_sector_x || new_sector_y != old_sector_y) {
         sectors[old_sector_y][old_sector_x].erase(player_id);
         sectors[new_sector_y][new_sector_x].insert(player_id);
@@ -34,6 +34,6 @@ bool Sector::UpdatePlayerInSector(uint32 player_id, short new_sector_x, short ne
 
 void Sector::RemovePlayerInSector(uint32 player_id, short sector_x, short sector_y)
 {
-    WRITE_LOCK;
+   // WRITE_LOCK;
     sectors[sector_y][sector_x].erase(player_id);
 }

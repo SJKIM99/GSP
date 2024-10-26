@@ -74,8 +74,6 @@ void GameSession::InitSession()
 
 void GameSession::Heal()
 {
-	//DB_EVENT playerLoginEvent{ key, chrono::system_clock::now(), DB_EVENT_TYPE::EV_ADD_PLAYER_INFO, addPlayer };
-	//GDataBaseJobQueue.push(playerLoginEvent);
 	TIMER_EVENT healEvent{ _id,chrono::system_clock::now(), TIMER_EVENT_TYPE::EV_HEAL,0 };
 	GTimerJobQueue.push(healEvent);
 }
@@ -161,6 +159,12 @@ void GameSession::SendPlayerAtackToNPCPacket(uint32 clientId)
 
 void GameSession::SendNPCDiePacket(uint32 clientId)
 {
+	{
+		WRITE_LOCK;
+		if (_viewList.count(clientId))
+			_viewList.erase(clientId);
+	}
+
 	SC_NPC_DIE_PACKET packet;
 
 	packet.size = sizeof SC_NPC_DIE_PACKET;
@@ -172,6 +176,12 @@ void GameSession::SendNPCDiePacket(uint32 clientId)
 
 void GameSession::SendRespawnNPCPacket(uint32 clientId)
 {
+	{
+		WRITE_LOCK;
+		if (_viewList.count(clientId))
+			_viewList.erase(clientId);
+	}
+
 	SC_NPC_RESPAWN_PACKET packet;
 	
 	packet.size = sizeof SC_NPC_RESPAWN_PACKET;
@@ -207,6 +217,12 @@ void GameSession::SendHealPacket()
 
 void GameSession::SendPlayerDiePacket(uint32 clientId)
 {
+	{
+		WRITE_LOCK;
+		if (_viewList.count(clientId))
+			_viewList.erase(clientId);
+	}
+
 	SC_PLAYER_DIE_PACKET packet;
 	
 	packet.size = sizeof SC_PLAYER_DIE_PACKET;
@@ -219,6 +235,11 @@ void GameSession::SendPlayerDiePacket(uint32 clientId)
 
 void GameSession::SendRespawnPlayerPacket(uint32 clientId)
 {
+	{
+		WRITE_LOCK;
+		_viewList.insert(clientId);
+	}
+
 	SC_PLAYER_RESPAWN_PACKET packet;
 
 	packet.size = sizeof SC_PLAYER_RESPAWN_PACKET;

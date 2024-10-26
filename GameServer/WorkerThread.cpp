@@ -10,8 +10,9 @@
 void WorkerThread::Disconnect(uint32 clientId)
 {
 	auto& disconnectPlayer = GClients[clientId];
+	unordered_set<uint32> currentSector{};
+
 	{
-		READ_LOCK;
 		for (int16 dy = -1; dy <= 1; ++dy) {
 			for (int16 dx = -1; dx <= 1; ++dx) {
 				int16 sectorY = disconnectPlayer->_sectorY + dy;
@@ -20,7 +21,12 @@ void WorkerThread::Disconnect(uint32 clientId)
 					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
 					continue;
 				}
-				const auto& currentSector = GSector->sectors[sectorY][sectorX];
+
+				{
+					lock_guard<mutex>ll(GSector->sector_locks[sectorY][sectorX]);
+					currentSector = GSector->sectors[sectorY][sectorX];
+				}
+
 				for (const auto& id : currentSector) {
 
 					const auto& object = GClients[id];
@@ -34,7 +40,7 @@ void WorkerThread::Disconnect(uint32 clientId)
 	}
 
 	{
-		WRITE_LOCK;
+		lock_guard<mutex> ll(GSector->sector_locks[disconnectPlayer->_sectorY][disconnectPlayer->_sectorX]);
 		GSector->RemovePlayerInSector(clientId, GSector->GetMySector_X(disconnectPlayer->_sectorX), GSector->GetMySector_Y(disconnectPlayer->_sectorY));
 		disconnectPlayer = nullptr;
 	}
@@ -71,7 +77,7 @@ void WorkerThread::DoWork()
 			uint32 clientId = GetNewClientId();
 			if (clientId != -1) {
 				{
-					WRITE_LOCK;
+					//WRITE_LOCK;
 					GClients[clientId]->_state = SOCKET_STATE::ST_ALLOC;
 					GClients[clientId]->_id = clientId;
 					GClients[clientId]->_socket = GClientSocket;
@@ -121,42 +127,45 @@ void WorkerThread::DoWork()
 		}
 		case IO_TYPE::IO_GET_PLAYER_INFO: {
 			{
-				WRITE_LOCK;
+				lock_guard<mutex> ll(GClients[key]->_stateLock);
 				strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 				GClients[key]->_x = exOver->_playerInfo._x;
 				GClients[key]->_y = exOver->_playerInfo._y;
-				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 				GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 				GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 				GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
 
 			const short sectorX = GClients[key]->_sectorX;
 			const short sectorY = GClients[key]->_sectorY;
-			{
-				WRITE_LOCK;
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = GClients[key]->_sectorY + dy;
-						int16 sectorX = GClients[key]->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
-						}
 
-						const auto& currentSector = GSector->sectors[sectorY][sectorX];
-						for (const auto& id : currentSector) {
-							auto& client = GClients[id];
-							if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-							if (client->_id == key) continue;
-							if (!CanSee(key, id)) continue;
-							if (IsPc(client->_id)) client->SendAddPlayerPacket(key);
-							else WakeUpNpc(client->_id, key);
-							GClients[key]->SendAddPlayerPacket(client->_id);
-						}
+			unordered_set<uint32> currentSector{};
+
+			for (int16 dy = -1; dy <= 1; ++dy) {
+				for (int16 dx = -1; dx <= 1; ++dx) {
+					int16 sectorY = GClients[key]->_sectorY + dy;
+					int16 sectorX = GClients[key]->_sectorX + dx;
+					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+						continue;
+					}
+
+					{
+						lock_guard<mutex>ll(GSector->sector_locks[sectorY][sectorX]);
+						currentSector = GSector->sectors[sectorY][sectorX];
+					}
+
+					for (const auto& id : currentSector) {
+						auto& client = GClients[id];
+						if (SOCKET_STATE::ST_INGAME != client->_state) continue;
+						if (client->_id == key) continue;
+						if (!CanSee(key, id)) continue;
+						if (IsPc(client->_id)) client->SendAddPlayerPacket(key);
+						else WakeUpNpc(client->_id, key);
+						GClients[key]->SendAddPlayerPacket(client->_id);
 					}
 				}
 			}
@@ -165,15 +174,14 @@ void WorkerThread::DoWork()
 		}
 		case IO_TYPE::IO_ADD_PLAYER_INFO: {
 			{
-				WRITE_LOCK;
+				lock_guard<mutex> ll(GClients[key]->_stateLock);
 				strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 				GClients[key]->_x = rand() % W_WIDTH;
 				GClients[key]->_y = rand() % W_HEIGHT;
-				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 				GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 				GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 				GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
 
 			GClients[key]->SendLoginSuccessPacket();
@@ -191,27 +199,30 @@ void WorkerThread::DoWork()
 			const short sectorX = GClients[key]->_sectorX;
 			const short sectorY = GClients[key]->_sectorY;
 
-			{
-				//WRITE_LOCK;
-				READ_LOCK;
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = GClients[key]->_sectorY + dy;
-						int16 sectorX = GClients[key]->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
-						}
-						const auto& currentSector = GSector->sectors[sectorY][sectorX];
-						for (const auto& id : currentSector) {
-							auto& client = GClients[id];
-							if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-							if (client->_id == key) continue;
-							if (!CanSee(key, id)) continue;
-							if (IsPc(client->_id)) client->SendAddPlayerPacket(key);
-							else WakeUpNpc(client->_id, key);
-							GClients[key]->SendAddPlayerPacket(client->_id);
-						}
+			unordered_set<uint32> currentSector{};
+
+			for (int16 dy = -1; dy <= 1; ++dy) {
+				for (int16 dx = -1; dx <= 1; ++dx) {
+					int16 sectorY = GClients[key]->_sectorY + dy;
+					int16 sectorX = GClients[key]->_sectorX + dx;
+					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+						continue;
+					}
+
+					{
+						lock_guard<mutex>ll(GSector->sector_locks[sectorY][sectorX]);
+						currentSector = GSector->sectors[sectorY][sectorX];
+					}
+
+					for (const auto& id : currentSector) {
+						auto& client = GClients[id];
+						if (SOCKET_STATE::ST_INGAME != client->_state) continue;
+						if (client->_id == key) continue;
+						if (!CanSee(key, id)) continue;
+						if (IsPc(client->_id)) client->SendAddPlayerPacket(key);
+						else WakeUpNpc(client->_id, key);
+						GClients[key]->SendAddPlayerPacket(client->_id);
 					}
 				}
 			}
@@ -221,32 +232,33 @@ void WorkerThread::DoWork()
 		case IO_TYPE::IO_NPC_RANDOM_MOVE: {
 			bool keepGoing = false;
 			auto& moveNPC = GClients[key];
-			{
-				//WRITE_LOCK;
-				READ_LOCK
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = moveNPC->_sectorY + dy;
-						int16 sectorX = moveNPC->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
+			unordered_set<uint32> currentSector{};
+
+			for (int16 dy = -1; dy <= 1; ++dy) {
+				for (int16 dx = -1; dx <= 1; ++dx) {
+					int16 sectorY = moveNPC->_sectorY + dy;
+					int16 sectorX = moveNPC->_sectorX + dx;
+					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+						continue;
+					}
+
+					{
+						lock_guard<mutex>ll(GSector->sector_locks[sectorY][sectorX]);
+						currentSector = GSector->sectors[sectorY][sectorX];
+					}
+
+					for (const auto& id : currentSector) {
+						if (GClients[id]->_state != ST_INGAME) continue;
+						if (IsNPC(id)) continue;
+						if (!CanSee(key, id)) continue;
+						if (!CanAttack(key, id)) {
+							keepGoing = true;
+							break;
 						}
-
-						const auto& currentSector = GSector->sectors[sectorY][sectorX];
-
-						for (const auto& id : currentSector) {
-							if (GClients[id]->_state != ST_INGAME) continue;
-							if (IsNPC(id)) continue;
-							if (!CanSee(key, id)) continue;
-							if (!CanAttack(key, id)) {
-								keepGoing = true;
-								break;
-							}
-							else {
-								TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
-								GTimerJobQueue.push(ev);
-							}
+						else {
+							TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
+							GTimerJobQueue.push(ev);
 						}
 					}
 				}
@@ -265,7 +277,7 @@ void WorkerThread::DoWork()
 		case IO_TYPE::IO_NPC_RESPAWN: {
 			auto& respawnNPC = GClients[key];
 			{
-				WRITE_LOCK;
+				lock_guard<mutex> ll(GSector->sector_locks[respawnNPC->_sectorY][respawnNPC->_sectorX]);
 				while (true) {
 					respawnNPC->_x = rand() % W_WIDTH;
 					respawnNPC->_y = rand() % W_HEIGHT;
@@ -276,33 +288,37 @@ void WorkerThread::DoWork()
 						break;
 					}
 				}
-				respawnNPC->_state = SOCKET_STATE::ST_INGAME;
 				respawnNPC->_die.store(false);
 				respawnNPC->_hp = NPC_MAX_HP;
+				respawnNPC->_state = SOCKET_STATE::ST_INGAME;
 			}
 
-			{
-				READ_LOCK;
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = respawnNPC->_sectorY + dy;
-						int16 sectorX = respawnNPC->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
-						}
-						const auto& currentSector = GSector->sectors[sectorY][sectorX];
-						for (const auto& id : currentSector) {
-							if (GClients[id]->_state != SOCKET_STATE::ST_INGAME) continue;
-							if (IsNPC(id)) continue;
-							if (CanSee(key, id)) {
-								GClients[id]->SendRespawnNPCPacket(key);
-							}
+			unordered_set<uint32> currentSector{};
+
+			for (int16 dy = -1; dy <= 1; ++dy) {
+				for (int16 dx = -1; dx <= 1; ++dx) {
+					int16 sectorY = respawnNPC->_sectorY + dy;
+					int16 sectorX = respawnNPC->_sectorX + dx;
+					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+						continue;
+					}
+
+					{
+						lock_guard<mutex>ll(GSector->sector_locks[sectorY][sectorX]);
+						currentSector = GSector->sectors[sectorY][sectorX];
+					}
+
+					for (const auto& id : currentSector) {
+						if (GClients[id]->_state != SOCKET_STATE::ST_INGAME) continue;
+						if (IsNPC(id)) continue;
+						if (CanSee(key, id)) {
+							GClients[id]->SendRespawnNPCPacket(key);
 						}
 					}
 				}
 			}
-	
+
 			xdelete(exOver);
 			break;
 		}
@@ -313,7 +329,7 @@ void WorkerThread::DoWork()
 uint32 WorkerThread::GetNewClientId()
 {
 	for (int i = 0; i < MAX_USER; ++i) {
-		READ_LOCK;
+		lock_guard<mutex> ll(GClients[i]->_stateLock);
 		if (GClients[i]->_state == SOCKET_STATE::ST_FREE) {
 			return static_cast<uint32>(i);
 		}
@@ -337,7 +353,7 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 		DB_EVENT playerLoginEvent{ clientId, chrono::system_clock::now(),DB_EVENT_TYPE::EV_LOGIN_PLAYER, loginPlayer };
 		GDataBaseJobQueue.push(playerLoginEvent);
 	}
-		break;
+	break;
 	case static_cast<char>(PacketType::CS_MOVE):
 	{
 		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
@@ -352,7 +368,7 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 			MovePlayer(x, y, p->direction);
 
 			{
-				WRITE_LOCK;
+				lock_guard<mutex> ll(GSector->sector_locks[GClients[clientId]->_sectorY][GClients[clientId]->_sectorX]);
 				if (GSector->UpdatePlayerInSector(clientId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
 					GSector->GetMySector_X(GClients[clientId]->_x), GSector->GetMySector_Y(GClients[clientId]->_y))) {
 					GClients[clientId]->_sectorX = GSector->GetMySector_X(x);
@@ -372,15 +388,17 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 			DB_EVENT playerUpdateEvent{ clientId,chrono::system_clock::now(), EV_SAVE_PLAYER_INFO,savePlayerInfo };
 			GDataBaseJobQueue.push(playerUpdateEvent);
 
+
+			unordered_set<uint32> nearList{};
+			unordered_set<uint32> oldList{};
 			{
-				WRITE_LOCK;
-				unordered_set<uint32> nearList;
-				unordered_set<uint32> oldList = GClients[clientId]->_viewList;
-				UpdateViewList(clientId, nearList, oldList);
+				lock_guard<mutex> ll(GClients[clientId]->_viewListLock);
+				oldList = GClients[clientId]->_viewList;
 			}
+			UpdateViewList(clientId, nearList, oldList);
 		}
 	}
-		break;
+	break;
 	case static_cast<char>(PacketType::CS_ATTACK):
 	{
 		CS_ATTACK_PACKET* p = reinterpret_cast<CS_ATTACK_PACKET*>(packet);
@@ -390,32 +408,35 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 
 			GClients[clientId]->_lastMoveTime = p->attack_time;
 			auto& attackPlayer = GClients[clientId];
+			unordered_set<uint32> currentSector{};
 
-			{
-				READ_LOCK;
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = attackPlayer->_sectorY + dy;
-						int16 sectorX = attackPlayer->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
-						}
+			for (int16 dy = -1; dy <= 1; ++dy) {
+				for (int16 dx = -1; dx <= 1; ++dx) {
+					int16 sectorY = attackPlayer->_sectorY + dy;
+					int16 sectorX = attackPlayer->_sectorX + dx;
+					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+						continue;
+					}
 
-						const auto& currentSector = GSector->sectors[sectorY][sectorX];
-						for (const auto& id : currentSector) {
-							if (GClients[id]->_state != ST_INGAME) continue;
-							if (!IsNPC(id)) continue;
-							if (CanAttack(clientId, id)) {
-								AttackToNPC(id, clientId);
-							}
+					{
+						lock_guard<mutex> ll(GSector->sector_locks[sectorY][sectorX]);
+
+						GSector->sectors[sectorY][sectorX];
+					}
+
+					for (const auto& id : currentSector) {
+						if (GClients[id]->_state != ST_INGAME) continue;
+						if (!IsNPC(id)) continue;
+						if (CanAttack(clientId, id)) {
+							AttackToNPC(id, clientId);
 						}
 					}
 				}
 			}
 		}
 	}
-		break;
+	break;
 	}
 }
 
@@ -462,53 +483,59 @@ void WorkerThread::MovePlayer(short& x, short& y, char direction)
 void WorkerThread::UpdateViewList(uint32 clientId, unordered_set<uint32>& nearList, unordered_set<uint32>& oldList)
 {
 	auto& myPlayer = GClients[clientId];
-	{
-		for (int16 dy = -1; dy <= 1; ++dy) {
-			for (int16 dx = -1; dx <= 1; ++dx) {
-				int16 sectorY = myPlayer->_sectorY + dy;
-				int16 sectorX = myPlayer->_sectorX + dx;
-				if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-					continue;
-				}
-				const auto& currentSector = GSector->sectors[sectorY][sectorX];
-				for (const auto& id : currentSector) {
 
-					const auto& object = GClients[id];
-					if (object->_state != SOCKET_STATE::ST_INGAME) continue;
-					if (!CanSee(object->_id, clientId)) continue;
-					nearList.insert(id);
+	unordered_set<uint32> currentSector{};
+
+	for (int16 dy = -1; dy <= 1; ++dy) {
+		for (int16 dx = -1; dx <= 1; ++dx) {
+			int16 sectorY = myPlayer->_sectorY + dy;
+			int16 sectorX = myPlayer->_sectorX + dx;
+			if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+				sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+				continue;
+			}
+
+			{
+				lock_guard<mutex> ll(GSector->sector_locks[sectorY][sectorX]);
+				currentSector = GSector->sectors[sectorY][sectorX];
+			}
+
+			for (const auto& id : currentSector) {
+
+				const auto& object = GClients[id];
+				if (object->_state != SOCKET_STATE::ST_INGAME) continue;
+				if (!CanSee(object->_id, clientId)) continue;
+				nearList.insert(id);
+			}
+		}
+	}
+
+	for (auto& id : nearList) {
+		auto& object = GClients[id];
+		if (IsPc(id)) {
+			{
+				if (GClients[id]->_viewList.count(clientId)) {
+					GClients[id]->SendMovePacket(clientId);
+				}
+				else {
+
+					GClients[id]->SendAddPlayerPacket(clientId);
 				}
 			}
 		}
-
-		for (auto& id : nearList) {
-			auto& object = GClients[id];
-			if (IsPc(id)) {
-				{
-					if (GClients[id]->_viewList.count(clientId)) {
-						GClients[id]->SendMovePacket(clientId);
-					}
-					else {
-
-						GClients[id]->SendAddPlayerPacket(clientId);
-					}
-				}
-			}
-			else {
-				WakeUpNpc(id, clientId);
-			}
-			if (!oldList.count(id))
-				GClients[clientId]->SendAddPlayerPacket(id);
+		else {
+			WakeUpNpc(id, clientId);
 		}
+		if (!oldList.count(id))
+			GClients[clientId]->SendAddPlayerPacket(id);
+	}
 
 
-		for (auto& id : oldList) {
-			if (!nearList.count(id)) {
-				GClients[clientId]->SendRemovePlayerPacket(id);
-				if (IsPc(id)) 
-					GClients[id]->SendRemovePlayerPacket(clientId);
-			}
+	for (auto& id : oldList) {
+		if (!nearList.count(id)) {
+			GClients[clientId]->SendRemovePlayerPacket(id);
+			if (IsPc(id))
+				GClients[id]->SendRemovePlayerPacket(clientId);
 		}
 	}
 }
@@ -532,7 +559,7 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 {
 	if (GClients[npcId]->_die.load()) return;
 
-	if ((GClients[npcId]->_hp -= PLAYER_OFFENSIVE) <=0) {
+	if ((GClients[npcId]->_hp -= PLAYER_OFFENSIVE) <= 0) {
 
 		GClients[npcId]->_die.store(true);
 		GClients[playerId]->SendNPCDiePacket(npcId);
@@ -543,8 +570,8 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 	else {
 		GClients[playerId]->SendPlayerAtackToNPCPacket(npcId);
 	}
-	
-	
+
+
 }
 
 
