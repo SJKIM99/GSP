@@ -79,9 +79,9 @@ public:
 	unordered_set<uint32>	_viewList;
 	atomic_bool				_active;
 	atomic_bool				_attack;
-
-private:
-	USE_LOCK;
+	mutex					_socketStateLock;
+	mutex					_sessionStateLock;
+	mutex					_viewListLock;
 };
 
 extern array<shared_ptr<GameSession>, MAX_USER + MAX_NPC> GClients;

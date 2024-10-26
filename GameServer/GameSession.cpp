@@ -58,7 +58,7 @@ void GameSession::RegisteredSend(void* packet)
 
 void GameSession::InitSession()
 {
-	_state = SOCKET_STATE::ST_FREE;
+	_state = SOCKET_STATE::ST_ALLOC;
 	_prevRemainData = 0;
 	//_x = 0;
 	//_y = 0;
@@ -97,7 +97,7 @@ void GameSession::SendMovePacket(uint32 clientId)
 void GameSession::SendAddPlayerPacket(uint32 clientId)
 {
 	{
-		WRITE_LOCK;
+		lock_guard<mutex> ll(_viewListLock);
 		_viewList.insert(clientId);
 	}
 	SC_ADD_OBJECT_PACKET packet;
@@ -115,7 +115,7 @@ void GameSession::SendAddPlayerPacket(uint32 clientId)
 void GameSession::SendRemovePlayerPacket(uint32 clientId)
 {
 	{
-		WRITE_LOCK;
+		lock_guard<mutex> ll(_viewListLock);
 		if (_viewList.count(clientId))
 			_viewList.erase(clientId);
 		else {
@@ -161,6 +161,15 @@ void GameSession::SendPlayerAtackToNPCPacket(uint32 clientId)
 
 void GameSession::SendNPCDiePacket(uint32 clientId)
 {
+	{
+		lock_guard<mutex> ll(_viewListLock);
+		if (_viewList.count(clientId))
+			_viewList.erase(clientId);
+		else {
+			return;
+		}
+	}
+
 	SC_NPC_DIE_PACKET packet;
 
 	packet.size = sizeof SC_NPC_DIE_PACKET;
@@ -172,6 +181,11 @@ void GameSession::SendNPCDiePacket(uint32 clientId)
 
 void GameSession::SendRespawnNPCPacket(uint32 clientId)
 {
+	{
+		lock_guard<mutex> ll(_viewListLock);
+		_viewList.insert(clientId);
+	}
+
 	SC_NPC_RESPAWN_PACKET packet;
 	
 	packet.size = sizeof SC_NPC_RESPAWN_PACKET;
@@ -207,6 +221,15 @@ void GameSession::SendHealPacket()
 
 void GameSession::SendPlayerDiePacket(uint32 clientId)
 {
+	{
+		lock_guard<mutex> ll(_viewListLock);
+		if (_viewList.count(clientId))
+			_viewList.erase(clientId);
+		else {
+			return;
+		}
+	}
+
 	SC_PLAYER_DIE_PACKET packet;
 	
 	packet.size = sizeof SC_PLAYER_DIE_PACKET;
@@ -219,6 +242,11 @@ void GameSession::SendPlayerDiePacket(uint32 clientId)
 
 void GameSession::SendRespawnPlayerPacket(uint32 clientId)
 {
+	{
+		lock_guard<mutex> ll(_viewListLock);
+		_viewList.insert(clientId);
+	}
+
 	SC_PLAYER_RESPAWN_PACKET packet;
 
 	packet.size = sizeof SC_PLAYER_RESPAWN_PACKET;

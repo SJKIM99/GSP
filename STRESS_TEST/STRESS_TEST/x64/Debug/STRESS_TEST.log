@@ -1,0 +1,6 @@
+﻿  DrawModule.cpp
+  NetworkModule.cpp
+C:\Users\user\Desktop\GSP\STRESS_TEST\STRESS_TEST\NetworkModule.cpp(159,30): warning C4834: 'nodiscard' 특성이 포함된 함수의 반환 값을 버리는 중
+C:\Users\user\Desktop\GSP\STRESS_TEST\STRESS_TEST\NetworkModule.cpp(188,31): warning C4834: 'nodiscard' 특성이 포함된 함수의 반환 값을 버리는 중
+  코드를 생성하고 있습니다...
+  STRESS_TEST.vcxproj -> C:\Users\user\Desktop\GSP\STRESS_TEST\x64\Debug\STRESS_TEST.exe
