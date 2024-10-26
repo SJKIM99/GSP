@@ -453,8 +453,7 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 
 
 			unordered_set<uint32> nearList;
-			unordered_set<uint32> oldList = GClients[clientId]->_viewList;
-			UpdateViewList(clientId, nearList, oldList);
+			UpdateViewList(clientId, nearList, GClients[clientId]->_viewList);
 
 		}
 	}
@@ -542,7 +541,7 @@ void WorkerThread::MovePlayer(short& x, short& y, char direction)
 	}
 }
 
-void WorkerThread::UpdateViewList(uint32 clientId, unordered_set<uint32>& nearList, unordered_set<uint32>& oldList)
+void WorkerThread::UpdateViewList(uint32 clientId, unordered_set<uint32> nearList, unordered_set<uint32> oldList)
 {
 	auto& myPlayer = GClients[clientId];
 

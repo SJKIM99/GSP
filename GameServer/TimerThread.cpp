@@ -135,7 +135,7 @@ void TimerThread::DoTimer()
 				if (GClients[ev.player_id]->_die.load()) break;
 
 				{
-					WRITE_LOCK;
+					lock_guard<mutex> ll(GClients[ev.player_id]->_sessionStateLock);
 					auto& healPlayer = GClients[ev.player_id];
 					if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP) {
 						healPlayer->_hp = 100;
