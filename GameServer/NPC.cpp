@@ -80,14 +80,14 @@ void NPC::NPCRandomMove(uint32 npcId)
 
 	if (GSector->UpdatePlayerInSector(npcId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
 		GSector->GetMySector_X(npc._x), GSector->GetMySector_Y(npc._y))) {
-
-		npc._sectorX = GSector->GetMySector_X(x);
-		npc._sectorY = GSector->GetMySector_Y(y);
+			{
+				lock_guard<mutex> ll(npc._sessionStateLock);
+				npc._sectorX = GSector->GetMySector_X(x);
+				npc._sectorY = GSector->GetMySector_Y(y);
+				npc._x = x;
+				npc._y = y;
+			}
 	}
-
-	npc._x = x;
-	npc._y = y;
-
 
 	unordered_set<uint32> newList;
 

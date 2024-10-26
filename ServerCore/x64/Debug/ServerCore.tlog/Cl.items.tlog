@@ -1,0 +1,13 @@
+C:\Users\user\Desktop\GSP\ServerCore\Allocator.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\Allocator.obj
+C:\Users\user\Desktop\GSP\ServerCore\CoreGlobal.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\CoreGlobal.obj
+C:\Users\user\Desktop\GSP\ServerCore\CorePch.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\CorePch.obj
+C:\Users\user\Desktop\GSP\ServerCore\CoreTLS.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\CoreTLS.obj
+C:\Users\user\Desktop\GSP\ServerCore\DBConnection.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\DBConnection.obj
+C:\Users\user\Desktop\GSP\ServerCore\DBConnectionPool.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\DBConnectionPool.obj
+C:\Users\user\Desktop\GSP\ServerCore\DeadLockProfiler.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\DeadLockProfiler.obj
+C:\Users\user\Desktop\GSP\ServerCore\Lock.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\Lock.obj
+C:\Users\user\Desktop\GSP\ServerCore\Memory.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\Memory.obj
+C:\Users\user\Desktop\GSP\ServerCore\MemoryPool.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\MemoryPool.obj
+C:\Users\user\Desktop\GSP\ServerCore\pch.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\pch.obj
+C:\Users\user\Desktop\GSP\ServerCore\RefCounting.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\RefCounting.obj
+C:\Users\user\Desktop\GSP\ServerCore\ThreadManager.cpp;C:\Users\user\Desktop\GSP\ServerCore\x64\Debug\ThreadManager.obj

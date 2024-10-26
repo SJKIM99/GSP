@@ -443,13 +443,13 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 
 			GClients[clientId]->SendMovePacket(clientId);
 
-			DB_PLAYER_INFO savePlayerInfo{};
+			/*DB_PLAYER_INFO savePlayerInfo{};
 			savePlayerInfo._name = GClients[clientId]->_name;
 			savePlayerInfo._x = GClients[clientId]->_x;
 			savePlayerInfo._y = GClients[clientId]->_y;
 
 			DB_EVENT playerUpdateEvent{ clientId,chrono::system_clock::now(), EV_SAVE_PLAYER_INFO,savePlayerInfo };
-			GDataBaseJobQueue.push(playerUpdateEvent);
+			GDataBaseJobQueue.push(playerUpdateEvent);*/
 
 
 			unordered_set<uint32> nearList;
@@ -604,8 +604,8 @@ void WorkerThread::UpdateViewList(uint32 clientId, unordered_set<uint32> nearLis
 void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 {
 	if (GClients[npcId]->_die.load()) return;
-	if (GClients[npcId]->_active.load()) return;
 	if (GClients[npcId]->_attack.load()) return;
+	if (GClients[npcId]->_active.load()) return;
 
 	bool expected = false;
 	bool desired = true;
@@ -624,7 +624,11 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 
 		GClients[npcId]->_die.store(true);
 		GSector->RemovePlayerInSector(npcId, GClients[npcId]->_sectorX, GClients[npcId]->_sectorY);
-		GClients[npcId]->InitSession();
+		
+		{
+			lock_guard<mutex> ll(GClients[npcId]->_sessionStateLock);
+			GClients[npcId]->InitSession();
+		}
 		GClients[playerId]->SendNPCDiePacket(npcId);
 
 		TIMER_EVENT respawnEvent{ npcId,chrono::system_clock::now() + 10s,TIMER_EVENT_TYPE::EV_NPC_RESPAWN,0 };

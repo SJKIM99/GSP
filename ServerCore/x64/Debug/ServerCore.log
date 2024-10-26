@@ -1,0 +1,15 @@
+﻿  pch.cpp
+  Allocator.cpp
+  CoreGlobal.cpp
+  CorePch.cpp
+  CoreTLS.cpp
+  DBConnection.cpp
+  DBConnectionPool.cpp
+  DeadLockProfiler.cpp
+  Lock.cpp
+  Memory.cpp
+  MemoryPool.cpp
+  RefCounting.cpp
+  ThreadManager.cpp
+  코드를 생성하고 있습니다...
+  ServerCore.vcxproj -> C:\Users\user\Desktop\GSP\Libraries\Debug\ServerCore.lib

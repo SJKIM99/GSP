@@ -23,10 +23,17 @@ void Sector::AddPlayerInSector(uint32 player_id, short sector_x, short sector_y)
 
 bool Sector::UpdatePlayerInSector(uint32 player_id, short new_sector_x, short new_sector_y, short old_sector_x, short old_sector_y)
 {
-    lock_guard<mutex> ll(sectorLocks[new_sector_x][new_sector_y]);
     if (new_sector_x != old_sector_x || new_sector_y != old_sector_y) {
-        sectors[old_sector_y][old_sector_x].erase(player_id);
-        sectors[new_sector_y][new_sector_x].insert(player_id);
+        {
+            lock_guard<mutex> ll(sectorLocks[new_sector_x][new_sector_y]);
+            sectors[new_sector_y][new_sector_x].insert(player_id);
+        }
+
+        {
+            lock_guard<mutex> ll(sectorLocks[old_sector_y][old_sector_x]);
+            sectors[old_sector_y][old_sector_x].erase(player_id);
+        }
+
         return true;
     }
     return false;

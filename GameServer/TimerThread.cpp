@@ -118,8 +118,11 @@ void TimerThread::DoTimer()
 					}
 
 					GSector->RemovePlayerInSector(ev.player_id, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
-					heatedPlayer->InitSession();
-
+					
+					{
+						lock_guard<mutex> ll(heatedPlayer->_sessionStateLock);
+						heatedPlayer->InitSession();
+					}
 
 					TIMER_EVENT respawnEvent{ heatedPlayer->_id, chrono::system_clock::now() + 30s,TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN, 0 };
 					GTimerJobQueue.push(respawnEvent);
