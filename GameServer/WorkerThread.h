@@ -24,7 +24,7 @@ public:
 public:
 	uint32			GetNowTime();
 	void			MovePlayer(short& x, short& y, char direction);
-	void			UpdateViewList(uint32 clientId, unordered_set<uint32>& nearList, unordered_set<uint32>& oldList);
+	void			UpdateViewList(uint32 clientId);
 	void			WakeUpNpc(uint32 npcId, uint32 wakerId);
 	void			AttackToNPC(uint32 npcId, uint32 playerId);
 private:

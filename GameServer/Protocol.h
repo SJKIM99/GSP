@@ -6,7 +6,7 @@ constexpr int PORT_NUM = 4000;
 constexpr int NAME_SIZE = 20;
 constexpr int CHAT_SIZE = 20;
 
-constexpr int MAX_USER = 10000;
+constexpr int MAX_USER = 50000;
 constexpr int MAX_NPC = 200000;
 
 constexpr int W_WIDTH = 2000;
@@ -22,7 +22,7 @@ constexpr int NPC_MAX_HP = 50;
 
 
 constexpr int PLAYER_OFFENSIVE = 10;
-constexpr int NPC_OFFENSIVE = 5;
+constexpr int NPC_OFFENSIVE = 2;
 constexpr int HEAL_SIZE = 10;
 
 constexpr int BUF_SIZE = 1024;

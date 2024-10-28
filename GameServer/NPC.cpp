@@ -40,31 +40,37 @@ void NPC::InitNPC()
 void NPC::NPCRandomMove(uint32 npcId)
 {
 	GameSession& npc = *GClients[npcId];
-	
+
 	unordered_set<uint32> oldList;
 
-	{
-		WRITE_LOCK;
-		for (int16 dy = -1; dy <= 1; ++dy) {
-			for (int16 dx = -1; dx <= 1; ++dx) {
-				int16 sectorY = npc._sectorY + dy;
-				int16 sectorX = npc._sectorX + dx;
-				if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-					continue;
-				}
-				const auto& oldSector = GSector->sectors[sectorY][sectorX];
-				for (const auto& id : oldSector) {
 
-					const auto& object = GClients[id];
-					if (object->_state != ST_INGAME) continue;
-					if (true == IsNPC(object->_id)) continue;
-					if (!CanSee(object->_id, npcId))continue;
-					oldList.insert(object->_id);
-				}
+	for (int16 dy = -1; dy <= 1; ++dy) {
+		for (int16 dx = -1; dx <= 1; ++dx) {
+			int16 sectorY = npc._sectorY + dy;
+			int16 sectorX = npc._sectorX + dx;
+			if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+				sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+				continue;
+			}
+
+			unordered_set<uint32> oldSector;
+
+			{
+				lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
+				oldSector = GSector->sectors[sectorY][sectorX];
+			}
+
+			for (const auto& id : oldSector) {
+
+				const auto& object = GClients[id];
+				if (object->_state != ST_INGAME) continue;
+				if (true == IsNPC(object->_id)) continue;
+				if (!CanSee(object->_id, npcId))continue;
+				oldList.insert(object->_id);
 			}
 		}
 	}
+
 
 	short x = npc._x;
 	short y = npc._y;
@@ -84,28 +90,34 @@ void NPC::NPCRandomMove(uint32 npcId)
 	}
 
 	unordered_set<uint32> newList;
-	{
-		WRITE_LOCK;
-		for (int16 dy = -1; dy <= 1; ++dy) {
-			for (int16 dx = -1; dx <= 1; ++dx) {
-				int16 sectorY = npc._sectorY + dy;
-				int16 sectorX = npc._sectorX + dx;
-				if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-					continue;
-				}
-				const auto& currentSector = GSector->sectors[sectorY][sectorX];
-				for (const auto& id : currentSector) {
 
-					const auto& object = GClients[id];
-					if (object->_state != ST_INGAME) continue;
-					if (true == IsNPC(object->_id)) continue;
-					if (!CanSee(object->_id, npcId))continue;
-					newList.insert(object->_id);
-				}
+	for (int16 dy = -1; dy <= 1; ++dy) {
+		for (int16 dx = -1; dx <= 1; ++dx) {
+			int16 sectorY = npc._sectorY + dy;
+			int16 sectorX = npc._sectorX + dx;
+			if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+				sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+				continue;
+			}
+
+			unordered_set<uint32> currentSector;
+
+			{
+				lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
+				currentSector = GSector->sectors[sectorY][sectorX];
+			}
+
+			for (const auto& id : currentSector) {
+
+				const auto& object = GClients[id];
+				if (object->_state != ST_INGAME) continue;
+				if (true == IsNPC(object->_id)) continue;
+				if (!CanSee(object->_id, npcId))continue;
+				newList.insert(object->_id);
 			}
 		}
 	}
+
 
 
 	for (auto id : newList) {

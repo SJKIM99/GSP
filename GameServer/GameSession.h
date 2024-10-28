@@ -47,6 +47,7 @@ public:
 	void RegisteredSend(void* packet);
 
 	void InitSession();
+	void DisconnectSession();
 	void Heal();
 
 	void SendMovePacket(uint32 clientId);
@@ -70,7 +71,7 @@ public:
 	short					_x;
 	short					_y;
 	uint16					_maxHp;
-	uint16					_hp;
+	atomic<uint16>			_hp;
 	uint16					_offensive;
 	atomic_bool				_die;
 	uint32					_lastMoveTime;
@@ -79,6 +80,9 @@ public:
 	unordered_set<uint32>	_viewList;
 	atomic_bool				_active;
 	atomic_bool				_attack;
+
+	mutex					_socketStateLock;
+	mutex					_viewListLock;
 
 private:
 	USE_LOCK;
