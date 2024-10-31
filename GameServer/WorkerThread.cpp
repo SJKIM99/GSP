@@ -320,7 +320,7 @@ void WorkerThread::DoWork()
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
 			auto& respawnPlayer = GClients[key];
-
+			printf("플레이어 리스폰 ID : %d\n", key);
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
 				respawnPlayer->_y = rand() % W_HEIGHT;
