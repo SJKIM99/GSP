@@ -125,11 +125,13 @@ void WorkerThread::DoWork()
 			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 			GClients[key]->_x = exOver->_playerInfo._x;
 			GClients[key]->_y = exOver->_playerInfo._y;
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
+			}
 
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
@@ -171,11 +173,13 @@ void WorkerThread::DoWork()
 			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 			GClients[key]->_x = rand() % W_WIDTH;
 			GClients[key]->_y = rand() % W_HEIGHT;
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
+			}
 
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
@@ -224,11 +228,13 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_NPC_RANDOM_MOVE: {
-			bool keepGoing = false;
+			bool keepGoingMove = false;
 			auto& moveNPC = GClients[key];
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
+				if (keepGoingMove) break;
 				for (int16 dx = -1; dx <= 1; ++dx) {
+					if (keepGoingMove) break;
 					int16 sectorY = moveNPC->_sectorY + dy;
 					int16 sectorX = moveNPC->_sectorX + dx;
 					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
@@ -246,27 +252,23 @@ void WorkerThread::DoWork()
 					for (const auto& id : currentSector) {
 						if (GClients[id]->_state != ST_INGAME) continue;
 						if (IsNPC(id)) continue;
-						if (!CanSee(key, id)) continue;
-						if (!CanAttack(key, id)) {
-							keepGoing = true;
+						if (CanSee(key, id)) {
+							keepGoingMove = true;
 							break;
-						}
-						else {
-							TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
-							GTimerJobQueue.push(ev);
 						}
 					}
 				}
 
 			}
 
-			if (keepGoing) {
+			if (keepGoingMove) {
 				GNPC->NPCRandomMove(key);
 				TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
 				GTimerJobQueue.push(ev);
 			}
 			else
 				GClients[key]->_active.store(false);
+
 			xdelete(exOver);
 			break;
 		}
@@ -320,6 +322,7 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
+			
 			auto& respawnPlayer = GClients[key];
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
@@ -331,9 +334,12 @@ void WorkerThread::DoWork()
 					break;
 				}
 			}
-			respawnPlayer->_state = SOCKET_STATE::ST_INGAME;
 			respawnPlayer->_die.store(false);
-			respawnPlayer->_hp = PLAYER_MAX_HP;
+			respawnPlayer->_hp = PLAYER_MAX_HP; 
+			{
+				lock_guard<mutex> ll(respawnPlayer->_socketStateLock);
+				respawnPlayer->_state = SOCKET_STATE::ST_INGAME;
+			}
 
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
@@ -368,17 +374,16 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_NPC_AGGRO_MOVE: {
-
-			bool keepGoing = false;
 			auto& moveNPC = GClients[key];
 
 			uint32 playerId = exOver->_aiTargetId;
 
-			if (GClients[playerId]->_state != ST_INGAME) {
+			if (GClients[playerId]->_state != ST_INGAME || GClients[playerId]->_die) {
 				GClients[key]->_active = false;
 				xdelete(exOver);
 				break;
 			}
+
 			AStar astar;
 			vector<NODE> AStarPath = astar.FindPath(GClients[key]->_x, GClients[key]->_y, GClients[playerId]->_x, GClients[playerId]->_y);
 
@@ -389,51 +394,24 @@ void WorkerThread::DoWork()
 
 				GNPC->NPCAStarMove(key, nextX, nextY);
 
+				if (CanAttack(key, playerId)) {
+					moveNPC->_active.store(false);
 
-				for (int16 dy = -1; dy <= 1; ++dy) {
-					for (int16 dx = -1; dx <= 1; ++dx) {
-						int16 sectorY = moveNPC->_sectorY + dy;
-						int16 sectorX = moveNPC->_sectorX + dx;
-						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-							continue;
-						}
-
-						unordered_set<uint32> currentSector;
-
-						{
-							lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
-							currentSector = GSector->sectors[sectorY][sectorX];
-						}
-
-						for (const auto& id : currentSector) {
-							if (GClients[id]->_state != ST_INGAME) continue;
-							if (IsNPC(id)) continue;
-							if (!CanSee(key, id)) continue;
-							if (!CanAttack(key, id)) {
-								keepGoing = true;
-								break;
-							}
-							else {
-								TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
-								GTimerJobQueue.push(ev);
-							}
-						}
-					}
-
-				}
-
-				if (keepGoing) {
-					TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,playerId };
+					TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,playerId };
 					GTimerJobQueue.push(ev);
 				}
-				else
-					GClients[key]->_active.store(false);
+				else {
+					if (CanSee(key, playerId)) {
+						TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,playerId };
+						GTimerJobQueue.push(ev);
+					}
+				}
 
 			}
 			else {
 				GClients[key]->_active.store(false);
 			}
+			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_HEAL: {
@@ -449,8 +427,9 @@ void WorkerThread::DoWork()
 				break;
 			}
 
-			if (healPlayer->_hp += HEAL_SIZE >= PLAYER_MAX_HP)
+			if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP)
 				healPlayer->_hp = 100;
+	
 			healPlayer->SendHealPacket();
 
 			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
@@ -686,8 +665,8 @@ void WorkerThread::UpdateViewList(uint32 clientId)
 void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 {
 	if (GClients[npcId]->_die.load()) return;
-	if (GClients[npcId]->_active.load()) return;
 	if (GClients[npcId]->_attack.load()) return;
+	if (GClients[npcId]->_active.load()) return;
 
 	bool expected = false;
 	bool desired = true;

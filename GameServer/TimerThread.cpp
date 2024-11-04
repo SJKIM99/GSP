@@ -56,33 +56,20 @@ void TimerThread::DoTimer()
 					if (desiredHp <= 0) {
 						heatedPlayer->_die.store(true);
 					}
-				} while (!heatedPlayer->_hp.compare_exchange_weak(currentHp, desiredHp));
+				} while (!heatedPlayer->_hp.compare_exchange_strong(currentHp, desiredHp));
 
 				if (!heatedPlayer->_die.load()) {
 
-					for (int16 dy = -1; dy <= 1; ++dy) {
-						for (int16 dx = -1; dx <= 1; ++dx) {
-							int16 sectorY = GClients[ev.aiTargetId]->_sectorY + dy;
-							int16 sectorX = GClients[ev.aiTargetId]->_sectorX + dx;
-							if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-								sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-								continue;
-							}
+					unordered_set<uint32> viewList;
+					{
+						lock_guard<mutex> ll(heatedPlayer->_viewListLock);
+						viewList = heatedPlayer->_viewList;
 
-							unordered_set<uint32> currentSector;
-
-							{
-								lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
-								currentSector = GSector->sectors[sectorY][sectorX];
-							}
-
-							for (const auto& id : currentSector) {
-								auto& client = GClients[id];
-								if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-								if (!CanSee(ev.aiTargetId, id)) continue;
-								if (IsPc(client->_id)) client->SendNPCAttackToPlayerPacket(heatedPlayer->_id);
-							}
-						}
+					}
+					for (auto& id : viewList) {
+						if (SOCKET_STATE::ST_INGAME != GClients[id]->_state) continue;
+						if (!CanSee(ev.aiTargetId, id)) continue;
+						if (IsPc(GClients[id]->_id))  GClients[id]->SendNPCAttackToPlayerPacket(heatedPlayer->_id);
 					}
 
 					if (CanAttack(ev.player_id, ev.aiTargetId)) {
@@ -95,33 +82,19 @@ void TimerThread::DoTimer()
 					}
 				}
 				else {
+					unordered_set<uint32> viewList;
+					{
+						lock_guard<mutex> ll(heatedPlayer->_viewListLock);
+						viewList = heatedPlayer->_viewList;
 
-					for (int16 dy = -1; dy <= 1; ++dy) {
-						for (int16 dx = -1; dx <= 1; ++dx) {
-							int16 sectorY = GClients[ev.aiTargetId]->_sectorY + dy;
-							int16 sectorX = GClients[ev.aiTargetId]->_sectorX + dx;
-							if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-								sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-								continue;
-							}
-
-							unordered_set<uint32> currentSector;
-
-							{
-								lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
-								currentSector = GSector->sectors[sectorY][sectorX];
-							}
-
-							for (const auto& id : currentSector) {
-								auto& client = GClients[id];
-								if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-								if (!CanSee(ev.aiTargetId, id)) continue;
-								if (IsPc(client->_id)) client->SendPlayerDiePacket(ev.aiTargetId);
-							}
-						}
+					}
+					for (auto& id : viewList) {
+						if (SOCKET_STATE::ST_INGAME != GClients[id]->_state) continue;
+						if (!CanSee(ev.aiTargetId, id)) continue;
+						if (IsPc(GClients[id]->_id)) GClients[id]->SendPlayerDiePacket(ev.aiTargetId);
 					}
 
-					GSector->RemovePlayerInSector(ev.player_id, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
+					GSector->RemovePlayerInSector(ev.aiTargetId, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
 					heatedPlayer->InitSession();
 
 					TIMER_EVENT respawnEvent{ heatedPlayer->_id, chrono::system_clock::now() + 30s,TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN, 0 };

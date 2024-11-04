@@ -1,0 +1,35 @@
+﻿  WorkerThread.cpp
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(132,31): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(159,19): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(160,58): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(161,35): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(178,31): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(189,31): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(189,31): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(215,19): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(216,58): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(217,35): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(249,19): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(250,22): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(255,24): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(255,24): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(264,25): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(265,21): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(265,21): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(280,33): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(311,18): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(312,43): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(388,24): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(390,19): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(393,22): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(393,22): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(397,17): warning C4244: '인수': 'ULONG_PTR'에서 'uint32'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(398,23): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(398,23): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(428,27): warning C4838: 'ULONG_PTR'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(428,27): warning C4244: '초기화 중': 'ULONG_PTR'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(461,30): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(672,32): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(678,31): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+C:\Users\user\Desktop\GSP\GameServer\WorkerThread.cpp(698,29): warning C4838: 'uint32'에서 'int'(으)로의 변환에는 축소 변환이 필요합니다.
+  GameServer.vcxproj -> C:\Users\user\Desktop\GSP\Binary\Debug\GameServer.exe
