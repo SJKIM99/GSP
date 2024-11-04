@@ -56,7 +56,7 @@ void TimerThread::DoTimer()
 					if (desiredHp <= 0) {
 						heatedPlayer->_die.store(true);
 					}
-				} while (!heatedPlayer->_hp.compare_exchange_weak(currentHp, desiredHp));
+				} while (!heatedPlayer->_hp.compare_exchange_strong(currentHp, desiredHp));
 
 				if (!heatedPlayer->_die.load()) {
 
@@ -121,7 +121,7 @@ void TimerThread::DoTimer()
 						}
 					}
 
-					GSector->RemovePlayerInSector(ev.player_id, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
+					GSector->RemovePlayerInSector(ev.aiTargetId, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
 					heatedPlayer->InitSession();
 
 					TIMER_EVENT respawnEvent{ heatedPlayer->_id, chrono::system_clock::now() + 30s,TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN, 0 };
@@ -130,7 +130,7 @@ void TimerThread::DoTimer()
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_HEAL: {
-				if (GClients[ev.player_id] == nullptr) break;
+				/*if (GClients[ev.player_id] == nullptr) break;
 				if (GClients[ev.player_id]->_die.load()) break;
 
 				{
@@ -144,7 +144,10 @@ void TimerThread::DoTimer()
 				GClients[ev.player_id]->SendHealPacket();
 
 				TIMER_EVENT healEvent{ ev.player_id, chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL, ev.aiTargetId };
-				GTimerJobQueue.push(healEvent);
+				GTimerJobQueue.push(healEvent);*/
+				OVER_EXP* ov = xnew<OVER_EXP>();
+				ov->_type = IO_TYPE::IO_HEAL;
+				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN: {

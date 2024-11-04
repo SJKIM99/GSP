@@ -124,12 +124,11 @@ void WorkerThread::DoWork()
 			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 			GClients[key]->_x = exOver->_playerInfo._x;
 			GClients[key]->_y = exOver->_playerInfo._y;
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
 
 			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
-
+			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
 
@@ -166,15 +165,14 @@ void WorkerThread::DoWork()
 			xdelete(exOver);
 			break;
 		}
-		case IO_TYPE::IO_ADD_PLAYER_INFO: {
+		case IO_TYPE::IO_ADD_PLAYER_INFO: {		
 			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
 			GClients[key]->_x = rand() % W_WIDTH;
 			GClients[key]->_y = rand() % W_HEIGHT;
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
@@ -269,9 +267,8 @@ void WorkerThread::DoWork()
 			xdelete(exOver);
 			break;
 		}
-		case IO_TYPE::IO_NPC_RESPAWN: {
+		case IO_TYPE::IO_NPC_RESPAWN: {			
 			auto& respawnNPC = GClients[key];
-
 			while (true) {
 				respawnNPC->_x = rand() % W_WIDTH;
 				respawnNPC->_y = rand() % W_HEIGHT;
@@ -282,11 +279,9 @@ void WorkerThread::DoWork()
 					break;
 				}
 			}
-			respawnNPC->_state = SOCKET_STATE::ST_INGAME;
 			respawnNPC->_die.store(false);
 			respawnNPC->_hp = NPC_MAX_HP;
-
-
+			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
 				for (int16 dx = -1; dx <= 1; ++dx) {
@@ -320,7 +315,6 @@ void WorkerThread::DoWork()
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
 			auto& respawnPlayer = GClients[key];
-			printf("플레이어 리스폰 ID : %d\n", key);
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
 				respawnPlayer->_y = rand() % W_HEIGHT;
@@ -331,10 +325,9 @@ void WorkerThread::DoWork()
 					break;
 				}
 			}
-			respawnPlayer->_state = SOCKET_STATE::ST_INGAME;
 			respawnPlayer->_die.store(false);
 			respawnPlayer->_hp = PLAYER_MAX_HP;
-
+			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
 				for (int16 dx = -1; dx <= 1; ++dx) {
@@ -364,6 +357,25 @@ void WorkerThread::DoWork()
 
 			respawnPlayer->Heal();
 			
+			xdelete(exOver);
+			break;
+		}
+		case IO_TYPE::IO_HEAL: {
+
+			if (GClients[key]->_die.load()) {
+				xdelete(exOver);
+				break;
+			}
+
+			if ((GClients[key]->_hp += HEAL_SIZE) >= PLAYER_MAX_HP) {
+				GClients[key]->_hp = 100;
+			}
+
+			GClients[key]->SendHealPacket();
+
+			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
+			GTimerJobQueue.push(healEvent);
+
 			xdelete(exOver);
 			break;
 		}
@@ -412,16 +424,15 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 
 			MovePlayer(x, y, p->direction);
 
-			{
-				WRITE_LOCK;
-				if (GSector->UpdatePlayerInSector(clientId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
-					GSector->GetMySector_X(GClients[clientId]->_x), GSector->GetMySector_Y(GClients[clientId]->_y))) {
-					GClients[clientId]->_sectorX = GSector->GetMySector_X(x);
-					GClients[clientId]->_sectorY = GSector->GetMySector_Y(y);
-				}
-				GClients[clientId]->_x = x;
-				GClients[clientId]->_y = y;
+
+			if (GSector->UpdatePlayerInSector(clientId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
+				GSector->GetMySector_X(GClients[clientId]->_x), GSector->GetMySector_Y(GClients[clientId]->_y))) {
+				GClients[clientId]->_sectorX = GSector->GetMySector_X(x);
+				GClients[clientId]->_sectorY = GSector->GetMySector_Y(y);
 			}
+			GClients[clientId]->_x = x;
+			GClients[clientId]->_y = y;
+
 
 			GClients[clientId]->SendMovePacket(clientId);
 
@@ -433,10 +444,8 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 			DB_EVENT playerUpdateEvent{ clientId,chrono::system_clock::now(), EV_SAVE_PLAYER_INFO,savePlayerInfo };
 			GDataBaseJobQueue.push(playerUpdateEvent);*/
 
-			
-				
-				UpdateViewList(clientId);
-			
+			UpdateViewList(clientId);
+
 		}
 	}
 		break;

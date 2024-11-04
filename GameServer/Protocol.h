@@ -22,7 +22,7 @@ constexpr int NPC_MAX_HP = 50;
 
 
 constexpr int PLAYER_OFFENSIVE = 10;
-constexpr int NPC_OFFENSIVE = 2;
+constexpr int NPC_OFFENSIVE = 3;
 constexpr int HEAL_SIZE = 10;
 
 constexpr int BUF_SIZE = 1024;
