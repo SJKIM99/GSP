@@ -18,6 +18,7 @@ GameSession::GameSession()
 	_sectorX = 0;
 	_sectorY = 0;
 	_viewList.clear();
+	_astarTargetId = MAX_USER;
 }
 
 GameSession::~GameSession()
@@ -120,6 +121,8 @@ void GameSession::SendAddPlayerPacket(uint32 clientId)
 
 	packet.size = sizeof(SC_ADD_OBJECT_PACKET);
 	packet.type = static_cast<char>(PacketType::SC_ADD_OBJECT);
+	if (clientId > MAX_USER)
+		packet.monster_type = static_cast<char>(GClients[clientId]->_type);
 	packet.id = clientId;
 	packet.x = GClients[clientId]->_x;
 	packet.y = GClients[clientId]->_y;

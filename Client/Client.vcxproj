@@ -136,6 +136,7 @@
     <Image Include="바닥1.png" />
     <Image Include="바닥2.png" />
     <Image Include="액체몬스터.png" />
+    <Image Include="어그로몬스터.png" />
     <Image Include="장애물.png" />
   </ItemGroup>
   <ItemGroup>

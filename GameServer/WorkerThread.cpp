@@ -6,6 +6,7 @@
 #include "Sector.h"
 #include "TimerThread.h"
 #include "NPC.h"
+#include "AStar.h"
 
 void WorkerThread::Disconnect(uint32 clientId)
 {
@@ -320,7 +321,6 @@ void WorkerThread::DoWork()
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
 			auto& respawnPlayer = GClients[key];
-			printf("플레이어 리스폰 ID : %d\n", key);
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
 				respawnPlayer->_y = rand() % W_HEIGHT;
@@ -364,6 +364,97 @@ void WorkerThread::DoWork()
 
 			respawnPlayer->Heal();
 			
+			xdelete(exOver);
+			break;
+		}
+		case IO_TYPE::IO_NPC_AGGRO_MOVE: {
+
+			bool keepGoing = false;
+			auto& moveNPC = GClients[key];
+
+			uint32 playerId = exOver->_aiTargetId;
+
+			if (GClients[playerId]->_state != ST_INGAME) {
+				GClients[key]->_active = false;
+				xdelete(exOver);
+				break;
+			}
+			AStar astar;
+			vector<NODE> AStarPath = astar.FindPath(GClients[key]->_x, GClients[key]->_y, GClients[playerId]->_x, GClients[playerId]->_y);
+
+			if (!AStarPath.empty()) {
+				NODE nextNode = AStarPath.front();
+				short nextX = nextNode._x;
+				short nextY = nextNode._y;
+
+				GNPC->NPCAStarMove(key, nextX, nextY);
+
+
+				for (int16 dy = -1; dy <= 1; ++dy) {
+					for (int16 dx = -1; dx <= 1; ++dx) {
+						int16 sectorY = moveNPC->_sectorY + dy;
+						int16 sectorX = moveNPC->_sectorX + dx;
+						if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+							sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+							continue;
+						}
+
+						unordered_set<uint32> currentSector;
+
+						{
+							lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
+							currentSector = GSector->sectors[sectorY][sectorX];
+						}
+
+						for (const auto& id : currentSector) {
+							if (GClients[id]->_state != ST_INGAME) continue;
+							if (IsNPC(id)) continue;
+							if (!CanSee(key, id)) continue;
+							if (!CanAttack(key, id)) {
+								keepGoing = true;
+								break;
+							}
+							else {
+								TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
+								GTimerJobQueue.push(ev);
+							}
+						}
+					}
+
+				}
+
+				if (keepGoing) {
+					TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,playerId };
+					GTimerJobQueue.push(ev);
+				}
+				else
+					GClients[key]->_active.store(false);
+
+			}
+			else {
+				GClients[key]->_active.store(false);
+			}
+			break;
+		}
+		case IO_TYPE::IO_HEAL: {
+			auto& healPlayer = GClients[key];
+
+			if (healPlayer == nullptr) {
+				xdelete(exOver);
+				break;
+			}
+
+			if (healPlayer->_die.load()) {
+				xdelete(exOver);
+				break;
+			}
+
+			if (healPlayer->_hp += HEAL_SIZE >= PLAYER_MAX_HP)
+				healPlayer->_hp = 100;
+			healPlayer->SendHealPacket();
+
+			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
+			GTimerJobQueue.push(healEvent);
 			xdelete(exOver);
 			break;
 		}
@@ -412,16 +503,15 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 
 			MovePlayer(x, y, p->direction);
 
-			{
-				WRITE_LOCK;
-				if (GSector->UpdatePlayerInSector(clientId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
-					GSector->GetMySector_X(GClients[clientId]->_x), GSector->GetMySector_Y(GClients[clientId]->_y))) {
-					GClients[clientId]->_sectorX = GSector->GetMySector_X(x);
-					GClients[clientId]->_sectorY = GSector->GetMySector_Y(y);
-				}
-				GClients[clientId]->_x = x;
-				GClients[clientId]->_y = y;
+
+			if (GSector->UpdatePlayerInSector(clientId, GSector->GetMySector_X(x), GSector->GetMySector_Y(y),
+				GSector->GetMySector_X(GClients[clientId]->_x), GSector->GetMySector_Y(GClients[clientId]->_y))) {
+				GClients[clientId]->_sectorX = GSector->GetMySector_X(x);
+				GClients[clientId]->_sectorY = GSector->GetMySector_Y(y);
 			}
+			GClients[clientId]->_x = x;
+			GClients[clientId]->_y = y;
+
 
 			GClients[clientId]->SendMovePacket(clientId);
 
@@ -433,9 +523,9 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 			DB_EVENT playerUpdateEvent{ clientId,chrono::system_clock::now(), EV_SAVE_PLAYER_INFO,savePlayerInfo };
 			GDataBaseJobQueue.push(playerUpdateEvent);*/
 
-			
-				
-				UpdateViewList(clientId);
+
+
+			UpdateViewList(clientId);
 			
 		}
 	}
@@ -604,8 +694,21 @@ void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 
 	if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
 
-	TIMER_EVENT moveEvent{ npcId,chrono::system_clock::now(),TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
-	GTimerJobQueue.push(moveEvent);
+	switch (GClients[npcId]->_type) {
+	case MONSTER_TYPE::PASSIVE: {
+
+		TIMER_EVENT randomMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
+		GTimerJobQueue.push(randomMoveEvent);
+		break;
+	}
+	case MONSTER_TYPE::AGGRO: {
+
+		TIMER_EVENT aggroMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_AGGRO_MOVE,wakerId };
+		GTimerJobQueue.push(aggroMoveEvent);
+		break;
+	}
+	}
+
 }
 
 void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)

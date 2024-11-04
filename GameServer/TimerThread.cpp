@@ -37,15 +37,15 @@ void TimerThread::DoTimer()
 			case TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER: {
 				auto& heatedPlayer = GClients[ev.aiTargetId];
 				auto& heatPlayer = GClients[ev.player_id];
-				
+
 				heatPlayer->_attack.store(true);
 
-				if (heatedPlayer->_die.load() || !CanAttack(heatedPlayer->_id,heatPlayer->_id) || heatPlayer->_die.load()) {
+				if (heatedPlayer->_die.load() || !CanAttack(heatedPlayer->_id, heatPlayer->_id) || heatPlayer->_die.load()) {
 					heatPlayer->_attack.store(false);
 					break;
 				}
 
-				
+
 				uint16 currentHp;
 				uint16 desiredHp;
 
@@ -130,26 +130,21 @@ void TimerThread::DoTimer()
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_HEAL: {
-				if (GClients[ev.player_id] == nullptr) break;
-				if (GClients[ev.player_id]->_die.load()) break;
-
-				{
-					WRITE_LOCK;
-					auto& healPlayer = GClients[ev.player_id];
-					if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP) {
-						healPlayer->_hp = 100;
-					}
-
-				}
-				GClients[ev.player_id]->SendHealPacket();
-
-				TIMER_EVENT healEvent{ ev.player_id, chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL, ev.aiTargetId };
-				GTimerJobQueue.push(healEvent);
+				OVER_EXP* ov = xnew<OVER_EXP>();
+				ov->_type = IO_TYPE::IO_HEAL;
+				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN: {
 				OVER_EXP* ov = xnew<OVER_EXP>();
 				ov->_type = IO_TYPE::IO_PLAYER_RESPAWN;
+				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
+				break;
+			}
+			case TIMER_EVENT_TYPE::EV_AGGRO_MOVE: {
+				OVER_EXP* ov = xnew<OVER_EXP>();
+				ov->_type = IO_TYPE::IO_NPC_AGGRO_MOVE;
+				ov->_aiTargetId = ev.aiTargetId;
 				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
 				break;
 			}

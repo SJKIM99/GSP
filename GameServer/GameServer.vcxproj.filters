@@ -34,6 +34,9 @@
     <Filter Include="Socket">
       <UniqueIdentifier>{6cb11f98-75f0-4f80-aee1-8d22bf0e24d2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="AStar">
+      <UniqueIdentifier>{08e13234-4fa5-406e-bda8-4b8613ea99d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameServer.cpp">
@@ -69,6 +72,9 @@
     <ClCompile Include="TimerThread.cpp">
       <Filter>TimerThread</Filter>
     </ClCompile>
+    <ClCompile Include="AStar.cpp">
+      <Filter>AStar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h">
@@ -103,6 +109,9 @@
     </ClInclude>
     <ClInclude Include="Protocol.h">
       <Filter>Protocol</Filter>
+    </ClInclude>
+    <ClInclude Include="AStar.h">
+      <Filter>AStar</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

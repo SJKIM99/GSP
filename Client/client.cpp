@@ -123,6 +123,7 @@ sf::Texture* board2;
 
 sf::Texture* knight;
 sf::Texture* liquid_monster;
+sf::Texture* aggro_monster;
 
 sf::Texture* wall;
 
@@ -133,12 +134,14 @@ void client_initialize()
 	wall = new sf::Texture;
 	knight = new sf::Texture;
 	liquid_monster = new sf::Texture;
+	aggro_monster = new sf::Texture;
 
 	board1->loadFromFile("바닥1.png");
 	board2->loadFromFile("바닥2.png");
 	wall->loadFromFile("장애물.png");
 	knight->loadFromFile("기사.png");
 	liquid_monster->loadFromFile("액체몬스터.png");
+	aggro_monster->loadFromFile("어그로몬스터.png");
 
 	if (false == g_font.loadFromFile("cour.ttf")) {
 		cout << "Font Loading Error!\n";
@@ -161,6 +164,7 @@ void client_finish()
 	delete board2;
 	delete knight;
 	delete liquid_monster;
+	delete aggro_monster;
 	delete wall;
 
 	exit(0);
@@ -206,7 +210,10 @@ void ProcessPacket(char* ptr)
 			players[id].show();
 		}
 		else {
-			players[id] = OBJECT{ *liquid_monster, 0, 0, 64, 64 };
+			if (my_packet->monster_type == MONSTER_TYPE::PASSIVE)
+				players[id] = OBJECT{ *liquid_monster, 0, 0, 64, 64 };
+			else
+				players[id] = OBJECT{ *aggro_monster, 0, 0, 64, 64 };
 			players[id].id = id;
 			players[id].move(my_packet->x, my_packet->y);
 			players[id].set_name(my_packet->name);

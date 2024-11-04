@@ -35,6 +35,9 @@
     <Image Include="장애물.png">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="어그로몬스터.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Font Include="cour.ttf">
