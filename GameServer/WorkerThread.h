@@ -8,6 +8,7 @@ class DBThread;
 class Sector;
 class TimerThread;
 class NPC;
+class AStar;
 
 class WorkerThread
 {

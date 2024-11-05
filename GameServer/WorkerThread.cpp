@@ -6,6 +6,7 @@
 #include "Sector.h"
 #include "TimerThread.h"
 #include "NPC.h"
+#include "AStar.h"
 
 void WorkerThread::Disconnect(uint32 clientId)
 {
@@ -126,9 +127,9 @@ void WorkerThread::DoWork()
 			GClients[key]->_y = exOver->_playerInfo._y;
 			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
 			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-
 			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
 			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
+
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
 
@@ -314,6 +315,7 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
+			
 			auto& respawnPlayer = GClients[key];
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
@@ -360,9 +362,13 @@ void WorkerThread::DoWork()
 			xdelete(exOver);
 			break;
 		}
-		case IO_TYPE::IO_HEAL: {
+		case IO_TYPE::IO_NPC_AGGRO_MOVE: {
+			auto& moveNPC = GClients[key];
 
-			if (GClients[key]->_die.load()) {
+			uint32 playerId = exOver->_aiTargetId;
+
+			if (GClients[playerId]->_state != ST_INGAME || GClients[playerId]->_die) {
+				GClients[key]->_active = false;
 				xdelete(exOver);
 				break;
 			}
@@ -376,6 +382,56 @@ void WorkerThread::DoWork()
 			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
 			GTimerJobQueue.push(healEvent);
 
+			AStar astar;
+			vector<NODE> AStarPath = astar.FindPath(GClients[key]->_x, GClients[key]->_y, GClients[playerId]->_x, GClients[playerId]->_y);
+
+			if (!AStarPath.empty()) {
+				NODE nextNode = AStarPath.back();
+				short nextX = nextNode._x;
+				short nextY = nextNode._y;
+
+				GNPC->NPCAStarMove(key, nextX, nextY);
+
+				if (CanAttack(key, playerId)) {
+					moveNPC->_active.store(false);
+
+					TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,playerId };
+					GTimerJobQueue.push(ev);
+				}
+				else {
+					if (CanSee(key, playerId)) {
+						TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,playerId };
+						GTimerJobQueue.push(ev);
+					}
+				}
+
+			}
+			else {
+				GClients[key]->_active.store(false);
+			}
+			xdelete(exOver);
+			break;
+		}
+		case IO_TYPE::IO_HEAL: {
+			auto& healPlayer = GClients[key];
+
+			if (healPlayer == nullptr) {
+				xdelete(exOver);
+				break;
+			}
+
+			if (healPlayer->_die.load()) {
+				xdelete(exOver);
+				break;
+			}
+
+			if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP)
+				healPlayer->_hp = 100;
+	
+			healPlayer->SendHealPacket();
+
+			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
+			GTimerJobQueue.push(healEvent);
 			xdelete(exOver);
 			break;
 		}
@@ -445,7 +501,6 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 			GDataBaseJobQueue.push(playerUpdateEvent);*/
 
 			UpdateViewList(clientId);
-
 		}
 	}
 		break;
@@ -605,16 +660,29 @@ void WorkerThread::UpdateViewList(uint32 clientId)
 void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 {
 	if (GClients[npcId]->_die.load()) return;
-	if (GClients[npcId]->_active.load()) return;
 	if (GClients[npcId]->_attack.load()) return;
+	if (GClients[npcId]->_active.load()) return;
 
 	bool expected = false;
 	bool desired = true;
 
 	if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
 
-	TIMER_EVENT moveEvent{ npcId,chrono::system_clock::now(),TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
-	GTimerJobQueue.push(moveEvent);
+	switch (GClients[npcId]->_type) {
+	case MONSTER_TYPE::PASSIVE: {
+
+		TIMER_EVENT randomMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
+		GTimerJobQueue.push(randomMoveEvent);
+		break;
+	}
+	case MONSTER_TYPE::AGGRO: {
+
+		TIMER_EVENT aggroMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_AGGRO_MOVE,wakerId };
+		GTimerJobQueue.push(aggroMoveEvent);
+		break;
+	}
+	}
+
 }
 
 void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)

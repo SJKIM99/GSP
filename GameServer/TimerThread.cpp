@@ -37,15 +37,15 @@ void TimerThread::DoTimer()
 			case TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER: {
 				auto& heatedPlayer = GClients[ev.aiTargetId];
 				auto& heatPlayer = GClients[ev.player_id];
-				
+
 				heatPlayer->_attack.store(true);
 
-				if (heatedPlayer->_die.load() || !CanAttack(heatedPlayer->_id,heatPlayer->_id) || heatPlayer->_die.load()) {
+				if (heatedPlayer->_die.load() || !CanAttack(heatedPlayer->_id, heatPlayer->_id) || heatPlayer->_die.load()) {
 					heatPlayer->_attack.store(false);
 					break;
 				}
 
-				
+
 				uint16 currentHp;
 				uint16 desiredHp;
 
@@ -60,29 +60,16 @@ void TimerThread::DoTimer()
 
 				if (!heatedPlayer->_die.load()) {
 
-					for (int16 dy = -1; dy <= 1; ++dy) {
-						for (int16 dx = -1; dx <= 1; ++dx) {
-							int16 sectorY = GClients[ev.aiTargetId]->_sectorY + dy;
-							int16 sectorX = GClients[ev.aiTargetId]->_sectorX + dx;
-							if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-								sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-								continue;
-							}
+					unordered_set<uint32> viewList;
+					{
+						lock_guard<mutex> ll(heatedPlayer->_viewListLock);
+						viewList = heatedPlayer->_viewList;
 
-							unordered_set<uint32> currentSector;
-
-							{
-								lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
-								currentSector = GSector->sectors[sectorY][sectorX];
-							}
-
-							for (const auto& id : currentSector) {
-								auto& client = GClients[id];
-								if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-								if (!CanSee(ev.aiTargetId, id)) continue;
-								if (IsPc(client->_id)) client->SendNPCAttackToPlayerPacket(heatedPlayer->_id);
-							}
-						}
+					}
+					for (auto& id : viewList) {
+						if (SOCKET_STATE::ST_INGAME != GClients[id]->_state) continue;
+						if (!CanSee(ev.aiTargetId, id)) continue;
+						if (IsPc(GClients[id]->_id))  GClients[id]->SendNPCAttackToPlayerPacket(heatedPlayer->_id);
 					}
 
 					if (CanAttack(ev.player_id, ev.aiTargetId)) {
@@ -95,30 +82,16 @@ void TimerThread::DoTimer()
 					}
 				}
 				else {
+					unordered_set<uint32> viewList;
+					{
+						lock_guard<mutex> ll(heatedPlayer->_viewListLock);
+						viewList = heatedPlayer->_viewList;
 
-					for (int16 dy = -1; dy <= 1; ++dy) {
-						for (int16 dx = -1; dx <= 1; ++dx) {
-							int16 sectorY = GClients[ev.aiTargetId]->_sectorY + dy;
-							int16 sectorX = GClients[ev.aiTargetId]->_sectorX + dx;
-							if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
-								sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
-								continue;
-							}
-
-							unordered_set<uint32> currentSector;
-
-							{
-								lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
-								currentSector = GSector->sectors[sectorY][sectorX];
-							}
-
-							for (const auto& id : currentSector) {
-								auto& client = GClients[id];
-								if (SOCKET_STATE::ST_INGAME != client->_state) continue;
-								if (!CanSee(ev.aiTargetId, id)) continue;
-								if (IsPc(client->_id)) client->SendPlayerDiePacket(ev.aiTargetId);
-							}
-						}
+					}
+					for (auto& id : viewList) {
+						if (SOCKET_STATE::ST_INGAME != GClients[id]->_state) continue;
+						if (!CanSee(ev.aiTargetId, id)) continue;
+						if (IsPc(GClients[id]->_id)) GClients[id]->SendPlayerDiePacket(ev.aiTargetId);
 					}
 
 					GSector->RemovePlayerInSector(ev.aiTargetId, GSector->GetMySector_X(heatedPlayer->_sectorX), GSector->GetMySector_Y(heatedPlayer->_sectorY));
@@ -130,21 +103,6 @@ void TimerThread::DoTimer()
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_HEAL: {
-				/*if (GClients[ev.player_id] == nullptr) break;
-				if (GClients[ev.player_id]->_die.load()) break;
-
-				{
-					WRITE_LOCK;
-					auto& healPlayer = GClients[ev.player_id];
-					if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP) {
-						healPlayer->_hp = 100;
-					}
-
-				}
-				GClients[ev.player_id]->SendHealPacket();
-
-				TIMER_EVENT healEvent{ ev.player_id, chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL, ev.aiTargetId };
-				GTimerJobQueue.push(healEvent);*/
 				OVER_EXP* ov = xnew<OVER_EXP>();
 				ov->_type = IO_TYPE::IO_HEAL;
 				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
@@ -153,6 +111,13 @@ void TimerThread::DoTimer()
 			case TIMER_EVENT_TYPE::EV_PLAYER_RESPAWN: {
 				OVER_EXP* ov = xnew<OVER_EXP>();
 				ov->_type = IO_TYPE::IO_PLAYER_RESPAWN;
+				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
+				break;
+			}
+			case TIMER_EVENT_TYPE::EV_AGGRO_MOVE: {
+				OVER_EXP* ov = xnew<OVER_EXP>();
+				ov->_type = IO_TYPE::IO_NPC_AGGRO_MOVE;
+				ov->_aiTargetId = ev.aiTargetId;
 				::PostQueuedCompletionStatus(gHandle, 1, ev.player_id, &ov->_over);
 				break;
 			}

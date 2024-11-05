@@ -1,6 +1,7 @@
 #pragma once
 
 class TimerThread;
+class AStar;
 
 class OVER_EXP
 {
@@ -65,6 +66,7 @@ public:
 public:
 	SOCKET					_socket;
 	SOCKET_STATE			_state;
+	MONSTER_TYPE			_type;
 	uint32					_prevRemainData;
 	uint32					_id;
 	char					_name[NAME_SIZE];
@@ -80,6 +82,7 @@ public:
 	unordered_set<uint32>	_viewList;
 	atomic_bool				_active;
 	atomic_bool				_attack;
+	uint32					_astarTargetId;
 
 	mutex					_socketStateLock;
 	mutex					_viewListLock;

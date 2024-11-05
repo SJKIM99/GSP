@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AStar.cpp" />
     <ClCompile Include="Collision.cpp" />
     <ClCompile Include="DBThread.cpp" />
     <ClCompile Include="GameServer.cpp" />
@@ -177,6 +178,7 @@
     <ClCompile Include="WorkerThread.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AStar.h" />
     <ClInclude Include="Collision.h" />
     <ClInclude Include="DBThread.h" />
     <ClInclude Include="GameSession.h" />

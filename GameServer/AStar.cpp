@@ -1,73 +1,53 @@
 #include "pch.h"
 #include "AStar.h"
+#include "Collision.h"
 
-vector<pair<int, int>> AStar::findPath(int16 startX, int startY, int targetX, int targetY)
+vector<NODE> AStar::FindPath(int startX, int startY, int goalX, int goalY)
 {
-	priority_queue<Node*, vector<Node*>, CompareNode> openSet;
-	unordered_map<int, Node*> openMap;
-	unordered_map<int, bool> closedSet;
+    priority_queue<NODE> openSet;
+    map<pair<int,int>, pair<int,int>> cameFrom;
+    map<pair<int, int>, int> gScores;
 
-	Node* startNode = new Node(startX, startY, 0, heuristic(startX, startY, targetX, targetY));
-	openSet.push(startNode);
-	openMap[startX * maxY + startY] = startNode;
+    auto Heuristic = [](int x1, int y1, int x2, int y2) {
+        return abs(x1 - x2) + abs(y1 - y2);
+    };
 
-	while (!openSet.empty()) {
-		Node* current = openSet.top();
-		openSet.pop();
-		openMap.erase(current->_xPos * maxY + current->_yPos);
+    openSet.push({ startX, startY, 0,0, Heuristic(startX, startY, goalX, goalY) });
+    cameFrom[{startX, startY}] = { startX, startY };
+    gScores[{startX, startY}] = 0;
 
-		if (current->_xPos == targetX && current->_yPos == targetY) {
-			return reconstructPath(current);
-		}
+    while (!openSet.empty()) {
+        NODE current = openSet.top();
+        openSet.pop();
 
-		closedSet[current->_xPos * maxY + current->_yPos] = true;
-		for (Node* neighbor : getNeighbors(current)) {
+        if (current._x == goalX && current._y == goalY) {
+            vector<NODE> path;
+            while (!(current._x == startX && current._y == startY)) {
+                path.push_back({ current._x, current._y });
+                auto prev = cameFrom[{current._x, current._y}];
+                current._x = prev.first;
+                current._y = prev.second;
+            }
+            return path;
+        }
 
-			int hash = neighbor->_xPos * maxY + neighbor->_yPos;
-			if (closedSet[hash]) {
-				delete neighbor;
-				continue;
-			}
+        int dx[] = { 0,0,-1,1 };
+        int dy[] = { -1,1,0,0 };
 
-			float tentativeG = current->_g + 1;
-			if (openMap.find(hash) == openMap.end() || tentativeG < openMap[hash]->_g) {
+        for (int i = 0; i < 4; ++i) {
+            int nextX = current._x + dx[i];
+            int nextY = current._y + dy[i];
+            if (nextX < 0 || nextX >= W_WIDTH || nextY < 0 || nextY >= W_HEIGHT) continue;
+            if (isCollision(nextX, nextY)) continue;
 
-				neighbor->_g = tentativeG;
-				neighbor->_h = heuristic(neighbor->_xPos, neighbor->_yPos, targetX, targetY);
-				neighbor->_parent = current;
-				openSet.push(neighbor);
-				openMap[hash] = neighbor;
-			}
-		}
-	}
-	return {};
-}
-
-vector<AStar::Node*> AStar::getNeighbors(Node* node)
-{
-	vector<Node*> neighbors;
-	int dx[] = { -1, 1, 0, 0 };
-	int dy[] = { 0, 0, -1, 1 };
-
-	for (int i = 0; i < 4; ++i) {
-
-		int nx = node->_xPos + dx[i];
-		int ny = node->_yPos + dy[i];
-		if (nx >= 0 && nx < maxX && ny >= 0 && ny < maxY) {
-			neighbors.push_back(new Node(nx, ny));
-		}
-	}
-	return neighbors;
-}
-
-vector<pair<int, int>> AStar::reconstructPath(Node* node) const
-{
-	vector<pair<int, int>> path;
-	while (node) {
-
-		path.push_back({ node->_xPos, node->_yPos });
-		node = node->_parent;
-	}
-	reverse(path.begin(), path.end());
-	return path;
+            int newCost = gScores[{current._x, current._y}] + 1;
+            if (!gScores.count({ nextX, nextY }) || newCost < gScores[{nextX, nextY}]) {
+                gScores[{nextX, nextY}] = newCost;
+                int priority = newCost + Heuristic(nextX, nextY, goalX, goalY);
+                openSet.push({ nextX, nextY, priority, newCost, Heuristic(nextX, nextY, goalX, goalY) });
+                cameFrom[{nextX, nextY}] = { current._x, current._y };
+            }
+        }
+    }
+    return {};
 }
