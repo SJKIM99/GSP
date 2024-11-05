@@ -28,7 +28,6 @@ vector<NODE> AStar::FindPath(int startX, int startY, int goalX, int goalY)
                 current._x = prev.first;
                 current._y = prev.second;
             }
-            reverse(path.begin(), path.end());
             return path;
         }
 

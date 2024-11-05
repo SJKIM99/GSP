@@ -228,13 +228,11 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_NPC_RANDOM_MOVE: {
-			bool keepGoingMove = false;
+			bool keepGoing = false;
 			auto& moveNPC = GClients[key];
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
-				if (keepGoingMove) break;
 				for (int16 dx = -1; dx <= 1; ++dx) {
-					if (keepGoingMove) break;
 					int16 sectorY = moveNPC->_sectorY + dy;
 					int16 sectorX = moveNPC->_sectorX + dx;
 					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
@@ -252,23 +250,27 @@ void WorkerThread::DoWork()
 					for (const auto& id : currentSector) {
 						if (GClients[id]->_state != ST_INGAME) continue;
 						if (IsNPC(id)) continue;
-						if (CanSee(key, id)) {
-							keepGoingMove = true;
+						if (!CanSee(key, id)) continue;
+						if (!CanAttack(key, id)) {
+							keepGoing = true;
 							break;
+						}
+						else {
+							TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,id };
+							GTimerJobQueue.push(ev);
 						}
 					}
 				}
 
 			}
 
-			if (keepGoingMove) {
+			if (keepGoing) {
 				GNPC->NPCRandomMove(key);
 				TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
 				GTimerJobQueue.push(ev);
 			}
 			else
 				GClients[key]->_active.store(false);
-
 			xdelete(exOver);
 			break;
 		}
@@ -388,7 +390,7 @@ void WorkerThread::DoWork()
 			vector<NODE> AStarPath = astar.FindPath(GClients[key]->_x, GClients[key]->_y, GClients[playerId]->_x, GClients[playerId]->_y);
 
 			if (!AStarPath.empty()) {
-				NODE nextNode = AStarPath.front();
+				NODE nextNode = AStarPath.back();
 				short nextX = nextNode._x;
 				short nextY = nextNode._y;
 

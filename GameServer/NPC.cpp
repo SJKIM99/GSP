@@ -25,7 +25,7 @@ void NPC::InitNPC()
 
 		GClients[i]->_id = i;
 
-		if (i + MAX_USER <= 70000)
+		if (i <= 70000)
 			GClients[i]->_type = MONSTER_TYPE::AGGRO;
 		else
 			GClients[i]->_type = MONSTER_TYPE::PASSIVE;
