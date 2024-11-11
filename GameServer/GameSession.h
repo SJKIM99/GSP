@@ -1,7 +1,6 @@
 #pragma once
-
+#include "AStar.h"
 class TimerThread;
-class AStar;
 
 class OVER_EXP
 {
@@ -82,7 +81,7 @@ public:
 	unordered_set<uint32>	_viewList;
 	atomic_bool				_active;
 	atomic_bool				_attack;
-	uint32					_astarTargetId;
+	vector<NODE>			_astarPath;
 
 	mutex					_socketStateLock;
 	mutex					_viewListLock;

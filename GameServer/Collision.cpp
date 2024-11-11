@@ -1,34 +1,38 @@
 #include "pch.h"
 #include "Collision.h"
 
+array<array<bool, W_HEIGHT>, W_WIDTH> GCollision;
+
 constexpr int SCREEN_WDITH = 16;
 constexpr int SCREEN_HEIGHT = 16;
 
+bool checkCollision(short x_pos, short y_pos)
+{
+    if (x_pos < 0 || y_pos < 0 || x_pos >= W_HEIGHT || y_pos >= W_WIDTH) return false;
+    if ((x_pos / 3 + y_pos / 3) % 3 == 0) return false;
+    else if ((x_pos / 3 + y_pos / 3) % 3 == 1) return false;
+    else {
+        if ((x_pos / 2 + y_pos / 2) % 3 == 0) return true;
+        else if ((x_pos / 2 + y_pos / 2) % 3 == 1) return false;
+        else return false;
+    }
+}
+
 bool isCollision(short x_pos, short y_pos)
 {
-	for (int i = 0; i < SCREEN_WDITH; ++i) {
-		for (int j = 0; j < SCREEN_HEIGHT; ++j) {
-			int tile_x = i + x_pos;
-			int tile_y = j + y_pos;
-			if ((tile_x < 0) || (tile_y < 0)) continue;
-			if (0 == (tile_x / 3 + tile_y / 3) % 3) {
-				return false;
-			}
-			else if (1 == (tile_x / 3 + tile_y / 3) % 3)
-			{
-				return false;
-			}
-			else {	//厘局拱 面倒 贸府 秦具窃
-				if (0 == (tile_x / 2 + tile_y / 2) % 3) {
-					return true;
-				}
-				else if (1 == (tile_x / 2 + tile_y / 2) % 3) {
-					return false;
-				}
-				else {
-					return false;
-				}
-			}
-		}
-	}
+    return GCollision[y_pos][x_pos];
+}
+
+void InitCollisionTile()
+{
+    for (int i = 0; i < W_WIDTH; ++i) {
+        for (int j = 0; j < W_HEIGHT; ++j) {
+            if (checkCollision(i, j) == true)
+                GCollision[i][j] = true;
+            else
+                GCollision[i][j] = false;
+        }
+    }
+
+    cout << "Init Collision Tile" << endl;
 }

@@ -310,12 +310,11 @@ void WorkerThread::DoWork()
 				}
 			}
 
-
 			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
-			
+
 			auto& respawnPlayer = GClients[key];
 			while (true) {
 				respawnPlayer->_x = rand() % W_WIDTH;
@@ -329,6 +328,7 @@ void WorkerThread::DoWork()
 			}
 			respawnPlayer->_die.store(false);
 			respawnPlayer->_hp = PLAYER_MAX_HP;
+
 			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
@@ -358,58 +358,48 @@ void WorkerThread::DoWork()
 			}
 
 			respawnPlayer->Heal();
-			
+
 			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_NPC_AGGRO_MOVE: {
 			auto& moveNPC = GClients[key];
+			short nextX = -1, nextY = -1;
+			if (moveNPC->_astarPath.empty()) {
+				moveNPC->_astarPath = FindPath(GClients[key]->_x, GClients[key]->_y, GClients[exOver->_aiTargetId]->_x, GClients[exOver->_aiTargetId]->_y);
+			}
 
-			uint32 playerId = exOver->_aiTargetId;
+			vector<NODE> path = moveNPC->_astarPath;
 
-			if (GClients[playerId]->_state != ST_INGAME || GClients[playerId]->_die) {
-				GClients[key]->_active = false;
+			if (!path.empty()) {
+				nextX = path.back()._x;
+				nextY = path.back()._y;
+				moveNPC->_astarPath.pop_back();
+			}
+			else {
+				moveNPC->_active.store(false);
 				xdelete(exOver);
 				break;
 			}
 
-			if ((GClients[key]->_hp += HEAL_SIZE) >= PLAYER_MAX_HP) {
-				GClients[key]->_hp = 100;
+			GNPC->NPCAStarMove(key, nextX, nextY);
+			
+			if (CanAttack(key, exOver->_aiTargetId)) {
+				moveNPC->_active.store(false);
+
+				TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,exOver->_aiTargetId };
+				GTimerJobQueue.push(ev);
 			}
-
-			GClients[key]->SendHealPacket();
-
-			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
-			GTimerJobQueue.push(healEvent);
-
-			AStar astar;
-			vector<NODE> AStarPath = astar.FindPath(GClients[key]->_x, GClients[key]->_y, GClients[playerId]->_x, GClients[playerId]->_y);
-
-			if (!AStarPath.empty()) {
-				NODE nextNode = AStarPath.back();
-				short nextX = nextNode._x;
-				short nextY = nextNode._y;
-
-				GNPC->NPCAStarMove(key, nextX, nextY);
-
-				if (CanAttack(key, playerId)) {
-					moveNPC->_active.store(false);
-
-					TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,playerId };
+			else {
+				if (CanSee(key, exOver->_aiTargetId)) {
+					TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,exOver->_aiTargetId };
 					GTimerJobQueue.push(ev);
 				}
 				else {
-					if (CanSee(key, playerId)) {
-						TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,playerId };
-						GTimerJobQueue.push(ev);
-					}
+					moveNPC->_active.store(false);
 				}
-
 			}
-			else {
-				GClients[key]->_active.store(false);
-			}
-			xdelete(exOver);
+ 			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_HEAL: {
@@ -469,6 +459,8 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 		break;
 	case static_cast<char>(PacketType::CS_MOVE):
 	{
+		if (GClients[clientId]->_die.load()) break;
+
 		CS_MOVE_PACKET* p = reinterpret_cast<CS_MOVE_PACKET*>(packet);
 
 		uint32 nowTime = GetNowTime();
@@ -506,6 +498,8 @@ void WorkerThread::HandlePacket(uint32 clientId, char* packet)
 		break;
 	case static_cast<char>(PacketType::CS_ATTACK):
 	{
+		if (GClients[clientId]->_die.load()) break;
+
 		CS_ATTACK_PACKET* p = reinterpret_cast<CS_ATTACK_PACKET*>(packet);
 
 		uint32 nowTime = GetNowTime();
@@ -676,7 +670,6 @@ void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 		break;
 	}
 	case MONSTER_TYPE::AGGRO: {
-
 		TIMER_EVENT aggroMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_AGGRO_MOVE,wakerId };
 		GTimerJobQueue.push(aggroMoveEvent);
 		break;

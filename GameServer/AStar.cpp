@@ -2,10 +2,11 @@
 #include "AStar.h"
 #include "Collision.h"
 
-vector<NODE> AStar::FindPath(int startX, int startY, int goalX, int goalY)
+vector<NODE> FindPath(int startX, int startY, int goalX, int goalY)
 {
+   
     priority_queue<NODE> openSet;
-    map<pair<int,int>, pair<int,int>> cameFrom;
+    map<pair<int, int>, pair<int, int>> cameFrom;
     map<pair<int, int>, int> gScores;
 
     auto Heuristic = [](int x1, int y1, int x2, int y2) {
@@ -49,5 +50,6 @@ vector<NODE> AStar::FindPath(int startX, int startY, int goalX, int goalY)
             }
         }
     }
-    return {};
+    vector<NODE> path;
+    return path;
 }

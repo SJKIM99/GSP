@@ -13,8 +13,6 @@
 #include "ServerGlobal.h"
 #include <concurrent_priority_queue.h>
 
-//constexpr int	 MAX_USER = 3000;
-
 enum IO_TYPE
 {
 	IO_ACCEPT,
@@ -27,7 +25,7 @@ enum IO_TYPE
 	IO_NPC_RESPAWN,
 	IO_PLAYER_RESPAWN,
 	IO_NPC_AGGRO_MOVE,
-	IO_HEAL
+	IO_HEAL,
 };
 
 enum SOCKET_STATE

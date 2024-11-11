@@ -56,7 +56,7 @@ enum TIMER_EVENT_TYPE
 };
 
 struct TIMER_EVENT {
-	int player_id;
+	uint32 player_id;
 	std::chrono::system_clock::time_point wakeup_time;
 	TIMER_EVENT_TYPE event;
 	uint32 aiTargetId;

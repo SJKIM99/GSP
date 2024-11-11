@@ -13,6 +13,7 @@
 #include "DBThread.h"
 #include "TimerThread.h"
 #include "NPC.h"
+#include "Collision.h"
 
 int main()
 {
@@ -28,7 +29,7 @@ int main()
 
 	//DB풀 초기화
 	GDBConnectionPool->Connect(8);
-
+	InitCollisionTile();
 	//Sector 생성
 	
 	//작업자 스레드 생성

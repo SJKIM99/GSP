@@ -18,7 +18,6 @@ GameSession::GameSession()
 	_sectorX = 0;
 	_sectorY = 0;
 	_viewList.clear();
-	_astarTargetId = MAX_USER;
 }
 
 GameSession::~GameSession()
