@@ -4,7 +4,7 @@
 
 vector<NODE> FindPath(int startX, int startY, int goalX, int goalY)
 {
-   
+    if (goalX == -1 || goalY == -1) cout << "¿À·ù";
     priority_queue<NODE> openSet;
     map<pair<int, int>, pair<int, int>> cameFrom;
     map<pair<int, int>, int> gScores;
@@ -20,9 +20,9 @@ vector<NODE> FindPath(int startX, int startY, int goalX, int goalY)
     while (!openSet.empty()) {
         NODE current = openSet.top();
         openSet.pop();
-
+        
+        vector<NODE> path;
         if (current._x == goalX && current._y == goalY) {
-            vector<NODE> path;
             while (!(current._x == startX && current._y == startY)) {
                 path.push_back({ current._x, current._y });
                 auto prev = cameFrom[{current._x, current._y}];
@@ -50,6 +50,5 @@ vector<NODE> FindPath(int startX, int startY, int goalX, int goalY)
             }
         }
     }
-    vector<NODE> path;
-    return path;
+    return {};
 }
