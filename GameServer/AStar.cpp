@@ -2,53 +2,58 @@
 #include "AStar.h"
 #include "Collision.h"
 
-vector<NODE> FindPath(int startX, int startY, int goalX, int goalY)
-{
-    if (goalX == -1 || goalY == -1) cout << "오류";
-    priority_queue<NODE> openSet;
-    map<pair<int, int>, pair<int, int>> cameFrom;
-    map<pair<int, int>, int> gScores;
+vector<NODE> FindPath(short startX, short startY, short goalX, short goalY) {
+  
+    if (sqrt(pow(goalX - startX, 2) + pow(goalY - startY, 2)) >= 20) cout << "문제가 있네";
+    if (startX == goalX && startY == goalY) return {};
 
-    auto Heuristic = [](int x1, int y1, int x2, int y2) {
+    priority_queue<NODE> openSet;
+    unordered_map<pair<short, short>, pair<short, short>, hash_pair> cameFrom;
+    unordered_map<pair<short, short>, int, hash_pair> gScores;
+
+    auto Heuristic = [](short x1, short y1, short x2, short y2) {
         return abs(x1 - x2) + abs(y1 - y2);
     };
 
-    openSet.push({ startX, startY, 0,0, Heuristic(startX, startY, goalX, goalY) });
+    int hCost = Heuristic(startX, startY, goalX, goalY);
+    openSet.push({ startX, startY, 0, hCost, hCost });
     cameFrom[{startX, startY}] = { startX, startY };
     gScores[{startX, startY}] = 0;
+
+    short dx[] = { 0, 0, -1, 1 };
+    short dy[] = { -1, 1, 0, 0 };
 
     while (!openSet.empty()) {
         NODE current = openSet.top();
         openSet.pop();
-        
-        vector<NODE> path;
+
         if (current._x == goalX && current._y == goalY) {
+            vector<NODE> path;
             while (!(current._x == startX && current._y == startY)) {
-                path.push_back({ current._x, current._y });
-                auto prev = cameFrom[{current._x, current._y}];
+                path.push_back({ current._x, current._y, 0, 0, 0 });
+                auto& prev = cameFrom[{current._x, current._y}];
                 current._x = prev.first;
                 current._y = prev.second;
             }
             return path;
         }
 
-        int dx[] = { 0,0,-1,1 };
-        int dy[] = { -1,1,0,0 };
-
         for (int i = 0; i < 4; ++i) {
-            int nextX = current._x + dx[i];
-            int nextY = current._y + dy[i];
+            short nextX = current._x + dx[i];
+            short nextY = current._y + dy[i];
+
             if (nextX < 0 || nextX >= W_WIDTH || nextY < 0 || nextY >= W_HEIGHT) continue;
             if (isCollision(nextX, nextY)) continue;
 
             int newCost = gScores[{current._x, current._y}] + 1;
             if (!gScores.count({ nextX, nextY }) || newCost < gScores[{nextX, nextY}]) {
                 gScores[{nextX, nextY}] = newCost;
-                int priority = newCost + Heuristic(nextX, nextY, goalX, goalY);
-                openSet.push({ nextX, nextY, priority, newCost, Heuristic(nextX, nextY, goalX, goalY) });
+                int hCost = Heuristic(nextX, nextY, goalX, goalY);
+                openSet.push({ nextX, nextY, newCost, hCost, newCost + hCost });
                 cameFrom[{nextX, nextY}] = { current._x, current._y };
             }
         }
     }
-    return {};
+
+    return {}; // 경로를 찾지 못한 경우
 }

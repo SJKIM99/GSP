@@ -18,6 +18,7 @@ GameSession::GameSession()
 	_sectorX = 0;
 	_sectorY = 0;
 	_viewList.clear();
+	_traceNpcId.store(-1);
 }
 
 GameSession::~GameSession()
@@ -71,6 +72,7 @@ void GameSession::InitSession()
 	_active.store(false);
 	_die.store(true);
 	_attack.store(false);
+	_traceNpcId.store(-1);
 }
 
 void GameSession::DisconnectSession()

@@ -239,7 +239,7 @@ void ProcessPacket(char* ptr)
 	case static_cast<char>(PacketType::SC_REMOVE_OBJECT):
 	{
 		SC_REMOVE_OBJECT_PACKET* my_packet = reinterpret_cast<SC_REMOVE_OBJECT_PACKET*>(ptr);
-		cout << my_packet->id << "번 플레이어 REMOVE_PACKET" << endl;
+		//cout << my_packet->id << "번 플레이어 REMOVE_PACKET" << endl;
 		int other_id = my_packet->id;
 		if (other_id == g_myid) {
 			avatar.hide();
@@ -254,7 +254,7 @@ void ProcessPacket(char* ptr)
 		SC_PLAYER_ATTACK_NPC_PACKET* packet = reinterpret_cast<SC_PLAYER_ATTACK_NPC_PACKET*>(ptr);
 		int npcId = packet->id;
 
-		cout << npcId << "번 NPC 체력 : " << packet->hp << endl;
+		//cout << npcId << "번 NPC 체력 : " << packet->hp << endl;
 		break;
 	}
 	case static_cast<char>(PacketType::SC_NPC_DIE):
@@ -262,7 +262,7 @@ void ProcessPacket(char* ptr)
 		SC_NPC_DIE_PACKET* packet = reinterpret_cast<SC_NPC_DIE_PACKET*>(ptr);
 		players.erase(packet->npc_id);
 
-		cout << packet->npc_id << "번 NPC 사망" << endl;
+		//cout << packet->npc_id << "번 NPC 사망" << endl;
 		break;
 	}
 	case static_cast<char>(PacketType::SC_NPC_RESPAWN):
@@ -272,7 +272,7 @@ void ProcessPacket(char* ptr)
 		players[packet->npc_id].m_x = packet->x;
 		players[packet->npc_id].m_y = packet->y;
 		
-		cout << packet->npc_id << "번 NPC 리스폰" << endl;
+		//cout << packet->npc_id << "번 NPC 리스폰" << endl;
 		break;
 	}
 	case static_cast<char>(PacketType::SC_NPC_ATTACK_PLAYER):
@@ -292,7 +292,7 @@ void ProcessPacket(char* ptr)
 	case static_cast<char>(PacketType::SC_PLAYER_DIE):
 	{
 		SC_PLAYER_DIE_PACKET* packet = reinterpret_cast<SC_PLAYER_DIE_PACKET*>(ptr);
-		cout << packet->id << " 번 플레이어 사망 패킷 전송" << endl;
+		//cout << packet->id << " 번 플레이어 사망 패킷 전송" << endl;
 
 		if (packet->id == g_myid) { 
 			avatar.hp = packet->hp;

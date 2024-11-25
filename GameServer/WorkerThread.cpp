@@ -122,14 +122,16 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_GET_PLAYER_INFO: {
-			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
-			GClients[key]->_x = exOver->_playerInfo._x;
-			GClients[key]->_y = exOver->_playerInfo._y;
-			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
-			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
-
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
+				GClients[key]->_x = exOver->_playerInfo._x;
+				GClients[key]->_y = exOver->_playerInfo._y;
+				GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
+				GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
+				GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
+			}
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
 
@@ -167,14 +169,16 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_ADD_PLAYER_INFO: {		
-			strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
-			GClients[key]->_x = rand() % W_WIDTH;
-			GClients[key]->_y = rand() % W_HEIGHT;
-			GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
-			GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
-			GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
-
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				strcpy_s(GClients[key]->_name, exOver->_playerInfo._name.c_str());
+				GClients[key]->_x = rand() % W_WIDTH;
+				GClients[key]->_y = rand() % W_HEIGHT;
+				GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
+				GClients[key]->_sectorY = GSector->GetMySector_Y(GClients[key]->_y);
+				GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
+			}
 			GClients[key]->SendLoginSuccessPacket();
 			GClients[key]->Heal();
 
@@ -268,26 +272,28 @@ void WorkerThread::DoWork()
 			xdelete(exOver);
 			break;
 		}
-		case IO_TYPE::IO_NPC_RESPAWN: {			
-			auto& respawnNPC = GClients[key];
-			while (true) {
-				respawnNPC->_x = rand() % W_WIDTH;
-				respawnNPC->_y = rand() % W_HEIGHT;
-				if (!isCollision(respawnNPC->_x, respawnNPC->_y)) {
-					GSector->AddPlayerInSector(key, GSector->GetMySector_X(respawnNPC->_x), GSector->GetMySector_Y(respawnNPC->_y));
-					respawnNPC->_sectorX = GSector->GetMySector_X(respawnNPC->_x);
-					respawnNPC->_sectorY = GSector->GetMySector_X(respawnNPC->_y);
-					break;
+		case IO_TYPE::IO_NPC_RESPAWN: {		
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				while (true) {
+					GClients[key]->_x = rand() % W_WIDTH;
+					GClients[key]->_y = rand() % W_HEIGHT;
+					if (!isCollision(GClients[key]->_x, GClients[key]->_y)) {
+						GSector->AddPlayerInSector(key, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+						GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
+						GClients[key]->_sectorY = GSector->GetMySector_X(GClients[key]->_y);
+						break;
+					}
 				}
+				GClients[key]->_die.store(false);
+				GClients[key]->_hp = NPC_MAX_HP;
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
-			respawnNPC->_die.store(false);
-			respawnNPC->_hp = NPC_MAX_HP;
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
 				for (int16 dx = -1; dx <= 1; ++dx) {
-					int16 sectorY = respawnNPC->_sectorY + dy;
-					int16 sectorX = respawnNPC->_sectorX + dx;
+					int16 sectorY = GClients[key]->_sectorY + dy;
+					int16 sectorX = GClients[key]->_sectorX + dx;
 					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
 						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
 						continue;
@@ -314,27 +320,27 @@ void WorkerThread::DoWork()
 			break;
 		}
 		case IO_TYPE::IO_PLAYER_RESPAWN: {
-
-			auto& respawnPlayer = GClients[key];
-			while (true) {
-				respawnPlayer->_x = rand() % W_WIDTH;
-				respawnPlayer->_y = rand() % W_HEIGHT;
-				if (!isCollision(respawnPlayer->_x, respawnPlayer->_y)) {
-					GSector->AddPlayerInSector(respawnPlayer->_id, GSector->GetMySector_X(respawnPlayer->_x), GSector->GetMySector_Y(respawnPlayer->_y));
-					respawnPlayer->_sectorX = GSector->GetMySector_X(respawnPlayer->_x);
-					respawnPlayer->_sectorY = GSector->GetMySector_X(respawnPlayer->_y);
-					break;
+			{
+				lock_guard<mutex> ll(GClients[key]->_socketStateLock);
+				while (true) {
+					GClients[key]->_x = rand() % W_WIDTH;
+					GClients[key]->_y = rand() % W_HEIGHT;
+					if (!isCollision(GClients[key]->_x, GClients[key]->_y)) {
+						GSector->AddPlayerInSector(GClients[key]->_id, GSector->GetMySector_X(GClients[key]->_x), GSector->GetMySector_Y(GClients[key]->_y));
+						GClients[key]->_sectorX = GSector->GetMySector_X(GClients[key]->_x);
+						GClients[key]->_sectorY = GSector->GetMySector_X(GClients[key]->_y);
+						break;
+					}
 				}
+				GClients[key]->_die.store(false);
+				GClients[key]->_hp = PLAYER_MAX_HP;
+				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
-			respawnPlayer->_die.store(false);
-			respawnPlayer->_hp = PLAYER_MAX_HP;
-
-			GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 
 			for (int16 dy = -1; dy <= 1; ++dy) {
 				for (int16 dx = -1; dx <= 1; ++dx) {
-					int16 sectorY = respawnPlayer->_sectorY + dy;
-					int16 sectorX = respawnPlayer->_sectorX + dx;
+					int16 sectorY = GClients[key]->_sectorY + dy;
+					int16 sectorX = GClients[key]->_sectorX + dx;
 					if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
 						sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
 						continue;
@@ -349,76 +355,72 @@ void WorkerThread::DoWork()
 
 					for (const auto& id : currentSector) {
 						if (GClients[id]->_state != SOCKET_STATE::ST_INGAME) continue;
-						if (!CanSee(respawnPlayer->_id, id)) continue;
-						if (IsPc(id)) GClients[id]->SendRespawnPlayerPacket(respawnPlayer->_id);
-						else GWorkerThread->WakeUpNpc(id, respawnPlayer->_id);
-						respawnPlayer->SendAddPlayerPacket(id);
+						if (!CanSee(GClients[key]->_id, id)) continue;
+						if (IsPc(id)) GClients[id]->SendRespawnPlayerPacket(GClients[key]->_id);
+						else GWorkerThread->WakeUpNpc(id, GClients[key]->_id);
+						GClients[key]->SendAddPlayerPacket(id);
 					}
 				}
 			}
 
-			respawnPlayer->Heal();
+			GClients[key]->Heal();
 
 			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_NPC_AGGRO_MOVE: {
-			auto& moveNPC = GClients[key];
-			short nextX = -1, nextY = -1;
-			if (moveNPC->_astarPath.empty()) {
-				moveNPC->_astarPath = FindPath(GClients[key]->_x, GClients[key]->_y, GClients[exOver->_aiTargetId]->_x, GClients[exOver->_aiTargetId]->_y);
+			{
+				lock_guard<mutex> ll(GClients[exOver->_aiTargetId]->_socketStateLock);
+				if (GClients[exOver->_aiTargetId]->_state != ST_INGAME) {
+					GClients[key]->_active.store(false);
+					GClients[key]->_attack.store(false);
+					xdelete(exOver);
+					break;
+				}
 			}
 
-			vector<NODE> path = moveNPC->_astarPath;
+			if (GClients[key]->_astarPath.empty()) {
+				GClients[key]->_astarPath = FindPath(GClients[key]->_x, GClients[key]->_y, GClients[exOver->_aiTargetId]->_x, GClients[exOver->_aiTargetId]->_y);
+			}
+
+			vector<NODE> path = GClients[key]->_astarPath;
 
 			if (!path.empty()) {
-				nextX = path.back()._x;
-				nextY = path.back()._y;
-				moveNPC->_astarPath.pop_back();
-			}
-			else {
-				moveNPC->_active.store(false);
-				xdelete(exOver);
-				break;
+				short nextX = path.back()._x;
+				short nextY = path.back()._y;
+				GClients[key]->_astarPath.pop_back();
+
+				GNPC->NPCAStarMove(key, nextX, nextY);
 			}
 
-			GNPC->NPCAStarMove(key, nextX, nextY);
-			
 			if (CanAttack(key, exOver->_aiTargetId)) {
-				moveNPC->_active.store(false);
+				if (!GClients[key]->_attack.load()) {
+					TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,exOver->_aiTargetId };
+					GTimerJobQueue.push(ev);
+				}
+			}
 
-				TIMER_EVENT ev{ key,chrono::system_clock::now() ,TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER,exOver->_aiTargetId };
+			if (CanSee(key, exOver->_aiTargetId)) {
+				GClients[key]->_active.store(true);
+				TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,exOver->_aiTargetId };
 				GTimerJobQueue.push(ev);
 			}
 			else {
-				if (CanSee(key, exOver->_aiTargetId)) {
-					TIMER_EVENT ev{ key,chrono::system_clock::now() + 1s, TIMER_EVENT_TYPE::EV_AGGRO_MOVE,exOver->_aiTargetId };
-					GTimerJobQueue.push(ev);
-				}
-				else {
-					moveNPC->_active.store(false);
-				}
+				GClients[key]->_active.store(false);
 			}
- 			xdelete(exOver);
+			xdelete(exOver);
 			break;
 		}
 		case IO_TYPE::IO_HEAL: {
-			auto& healPlayer = GClients[key];
-
-			if (healPlayer == nullptr) {
+			if (GClients[key]->_die.load()) {
 				xdelete(exOver);
 				break;
 			}
 
-			if (healPlayer->_die.load()) {
-				xdelete(exOver);
-				break;
-			}
-
-			if ((healPlayer->_hp += HEAL_SIZE) >= PLAYER_MAX_HP)
-				healPlayer->_hp = 100;
+			if ((GClients[key]->_hp += HEAL_SIZE) >= PLAYER_MAX_HP)
+				GClients[key]->_hp = 100;
 	
-			healPlayer->SendHealPacket();
+			GClients[key]->SendHealPacket();
 
 			TIMER_EVENT healEvent{ key,chrono::system_clock::now() + 5s, TIMER_EVENT_TYPE::EV_HEAL,0 };
 			GTimerJobQueue.push(healEvent);
@@ -660,18 +662,20 @@ void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 	bool expected = false;
 	bool desired = true;
 
-	if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
-
 	switch (GClients[npcId]->_type) {
 	case MONSTER_TYPE::PASSIVE: {
-
+		if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
 		TIMER_EVENT randomMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
 		GTimerJobQueue.push(randomMoveEvent);
 		break;
 	}
 	case MONSTER_TYPE::AGGRO: {
+		if (GClients[wakerId]->_traceNpcId.load() != -1) break;
+		if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
+		GClients[wakerId]->_traceNpcId.store(npcId);
 		TIMER_EVENT aggroMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_AGGRO_MOVE,wakerId };
 		GTimerJobQueue.push(aggroMoveEvent);
+		//cout << "NPCID : " << npcId << " " << "WakerId : " << wakerId << "\n";
 		break;
 	}
 	}
@@ -682,7 +686,39 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 {
 	if (GClients[npcId]->_die.load()) return;
 
-	if ((GClients[npcId]->_hp -= PLAYER_OFFENSIVE) <=0) {
+	if ((GClients[npcId]->_hp -= PLAYER_OFFENSIVE) <= 0) {
+
+		if (GClients[npcId]->_type == MONSTER_TYPE::AGGRO) {
+			if (GClients[playerId]->_traceNpcId.load() == npcId)
+				GClients[playerId]->_traceNpcId.store(-1);
+		}
+
+		for (int16 dy = -1; dy <= 1; ++dy) {
+			for (int16 dx = -1; dx <= 1; ++dx) {
+				int16 sectorY = GClients[npcId]->_sectorY + dy;
+				int16 sectorX = GClients[npcId]->_sectorX + dx;
+				if (sectorY < 0 || sectorY >= W_WIDTH / SECTOR_RANGE ||
+					sectorX < 0 || sectorX >= W_HEIGHT / SECTOR_RANGE) {
+					continue;
+				}
+
+				unordered_set<uint32> currentSector;
+
+				{
+					lock_guard<mutex> ll(GSector->sectorLocks[sectorY][sectorX]);
+					currentSector = GSector->sectors[sectorY][sectorX];
+				}
+
+				for (const auto& id : currentSector) {
+					if (GClients[id]->_state != SOCKET_STATE::ST_INGAME) continue;
+					if (IsNPC(id)) continue;
+					if (CanSee(id, npcId)) {
+						GClients[id]->SendNPCDiePacket(npcId);
+					}
+				}
+			}
+
+		}
 
 		GClients[npcId]->_die.store(true);
 		GClients[playerId]->SendNPCDiePacket(npcId);

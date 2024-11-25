@@ -82,9 +82,11 @@ public:
 	atomic_bool				_active;
 	atomic_bool				_attack;
 	vector<NODE>			_astarPath;
+	atomic_int				_traceNpcId;
 
 	mutex					_socketStateLock;
 	mutex					_viewListLock;
+
 
 private:
 	USE_LOCK;
