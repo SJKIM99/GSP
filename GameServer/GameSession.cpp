@@ -18,7 +18,6 @@ GameSession::GameSession()
 	_sectorX = 0;
 	_sectorY = 0;
 	_viewList.clear();
-	_traceNpcId.store(-1);
 }
 
 GameSession::~GameSession()
@@ -39,7 +38,7 @@ GameSession::~GameSession()
 void GameSession::MakeSessions()
 {
 	for (int i = 0; i < MAX_USER; ++i)
-		GClients[i] = MakeShared<GameSession>();
+		GClients[i] = MakeShared<Player>();
 	cout << "Sessions Init Success" << endl;
 }
 void GameSession::RegisteredRecv()
@@ -57,24 +56,6 @@ void GameSession::RegisteredSend(void* packet)
 	::WSASend(_socket, &sendData->_wsaBuf, 1, 0, 0, &sendData->_over, 0);
 }
 
-void GameSession::InitSession()
-{
-	lock_guard<mutex> ll(_socketStateLock);
-	_state = SOCKET_STATE::ST_ALLOC;
-	_prevRemainData = 0;
-	_x = -1;
-	_y = -1;
-	_hp = 0;
-	_lastMoveTime = 0;
-	_sectorX = -1;
-	_sectorY = -1;
-	_viewList.clear();
-	_active.store(false);
-	_die.store(true);
-	_attack.store(false);
-	_traceNpcId.store(-1);
-}
-
 void GameSession::DisconnectSession()
 {
 	lock_guard<mutex> ll(_socketStateLock);
@@ -90,12 +71,6 @@ void GameSession::DisconnectSession()
 	_active.store(false);
 	_die.store(true);
 	_attack.store(false);
-}
-
-void GameSession::Heal()
-{
-	TIMER_EVENT healEvent{ _id,chrono::system_clock::now(), TIMER_EVENT_TYPE::EV_HEAL,0 };
-	GTimerJobQueue.push(healEvent);
 }
 
 void GameSession::SendMovePacket(uint32 clientId)
@@ -123,7 +98,7 @@ void GameSession::SendAddPlayerPacket(uint32 clientId)
 	packet.size = sizeof(SC_ADD_OBJECT_PACKET);
 	packet.type = static_cast<char>(PacketType::SC_ADD_OBJECT);
 	if (clientId > MAX_USER)
-		packet.monster_type = static_cast<char>(GClients[clientId]->_type);
+		packet.monster_type = dynamic_pointer_cast<Monster>(GClients[clientId])->GetType();
 	packet.id = clientId;
 	packet.x = GClients[clientId]->_x;
 	packet.y = GClients[clientId]->_y;
@@ -266,3 +241,44 @@ void GameSession::SendRespawnPlayerPacket(uint32 clientId)
 	RegisteredSend(&packet);
 }
 
+void Player::InitSession()
+{
+	lock_guard<mutex> ll(_socketStateLock);
+	_state = SOCKET_STATE::ST_ALLOC;
+	_prevRemainData = 0;
+	_x = -1;
+	_y = -1;
+	_hp = 0;
+	_lastMoveTime = 0;
+	_sectorX = -1;
+	_sectorY = -1;
+	_viewList.clear();
+	_active.store(false);
+	_die.store(true);
+	_attack.store(false);
+	_traceNpcId.store(-1);
+}
+
+void Player::Heal()
+{
+	TIMER_EVENT healEvent{ _id,chrono::system_clock::now(), TIMER_EVENT_TYPE::EV_HEAL,0 };
+	GTimerJobQueue.push(healEvent);
+}
+
+void Monster::InitSession()
+{
+	lock_guard<mutex> ll(_socketStateLock);
+	_state = SOCKET_STATE::ST_ALLOC;
+	_prevRemainData = 0;
+	_x = -1;
+	_y = -1;
+	_hp = 0;
+	_lastMoveTime = 0;
+	_sectorX = -1;
+	_sectorY = -1;
+	_viewList.clear();
+	_active.store(false);
+	_die.store(true);
+	_attack.store(false);
+	_astarPath.clear();
+}

@@ -35,8 +35,8 @@ void TimerThread::DoTimer()
 				break;
 			}
 			case TIMER_EVENT_TYPE::EV_NPC_ATTACK_TO_PLAYER: {
-				auto& heatedPlayer = GClients[ev.aiTargetId];
-				auto& heatPlayer = GClients[ev.player_id];
+				auto heatedPlayer = dynamic_pointer_cast<Player>(GClients[ev.aiTargetId]);
+				auto heatPlayer = dynamic_pointer_cast<Monster>(GClients[ev.player_id]);
 
 				heatPlayer->_attack.store(true);
 

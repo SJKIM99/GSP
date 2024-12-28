@@ -2,9 +2,8 @@
 #include "AStar.h"
 #include "Collision.h"
 
-vector<NODE> FindPath(short startX, short startY, short goalX, short goalY) {
-  
-    if (sqrt(pow(goalX - startX, 2) + pow(goalY - startY, 2)) >= 20) cout << "문제가 있네";
+vector<NODE> FindPath(short startX, short startY, short goalX, short goalY) 
+{
     if (startX == goalX && startY == goalY) return {};
 
     priority_queue<NODE> openSet;

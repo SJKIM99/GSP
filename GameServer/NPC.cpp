@@ -10,7 +10,7 @@ void NPC::InitNPC()
 {
 	for (int32 i = MAX_USER; i < MAX_USER + MAX_NPC; ++i) {
 
-		GClients[i] = MakeShared<GameSession>();
+		GClients[i] = MakeShared<Monster>();
 		while (true) {
 
 			GClients[i]->_x = rand() % W_WIDTH;
@@ -26,9 +26,9 @@ void NPC::InitNPC()
 		GClients[i]->_id = i;
 
 		if (i <= 70000)
-			GClients[i]->_type = MONSTER_TYPE::AGGRO;
+			dynamic_pointer_cast<Monster>(GClients[i])->SetType(MONSTER_TYPE::AGGRO);
 		else
-			GClients[i]->_type = MONSTER_TYPE::PASSIVE;
+			dynamic_pointer_cast<Monster>(GClients[i])->SetType(MONSTER_TYPE::PASSIVE);
 	
 		GClients[i]->_maxHp = NPC_MAX_HP;
 		GClients[i]->_hp = NPC_MAX_HP;

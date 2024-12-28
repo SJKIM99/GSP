@@ -133,7 +133,7 @@ void WorkerThread::DoWork()
 				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
 			GClients[key]->SendLoginSuccessPacket();
-			GClients[key]->Heal();
+			dynamic_pointer_cast<Player>(GClients[key])->Heal();
 
 			const short sectorX = GClients[key]->_sectorX;
 			const short sectorY = GClients[key]->_sectorY;
@@ -180,7 +180,7 @@ void WorkerThread::DoWork()
 				GClients[key]->_state = SOCKET_STATE::ST_INGAME;
 			}
 			GClients[key]->SendLoginSuccessPacket();
-			GClients[key]->Heal();
+			dynamic_pointer_cast<Player>(GClients[key])->Heal();
 
 			DB_PLAYER_INFO addPlayer{};
 
@@ -363,7 +363,7 @@ void WorkerThread::DoWork()
 				}
 			}
 
-			GClients[key]->Heal();
+			dynamic_pointer_cast<Player>(GClients[key])->Heal();
 
 			xdelete(exOver);
 			break;
@@ -379,17 +379,18 @@ void WorkerThread::DoWork()
 				}
 			}
 
-			if (GClients[key]->_astarPath.empty()) {
-				GClients[key]->_astarPath = FindPath(GClients[key]->_x, GClients[key]->_y, GClients[exOver->_aiTargetId]->_x, GClients[exOver->_aiTargetId]->_y);
+			auto moveMonster = dynamic_pointer_cast<Monster>(GClients[key]);
+
+			if (moveMonster->GetPath().empty()) {
+				moveMonster->SetPath(FindPath(GClients[key]->_x, GClients[key]->_y, GClients[exOver->_aiTargetId]->_x, GClients[exOver->_aiTargetId]->_y));
 			}
 
-			vector<NODE> path = GClients[key]->_astarPath;
+			vector<NODE> path = moveMonster->GetPath();
 
 			if (!path.empty()) {
 				short nextX = path.back()._x;
 				short nextY = path.back()._y;
-				GClients[key]->_astarPath.pop_back();
-
+				moveMonster->GetPath().pop_back();
 				GNPC->NPCAStarMove(key, nextX, nextY);
 			}
 
@@ -662,7 +663,10 @@ void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 	bool expected = false;
 	bool desired = true;
 
-	switch (GClients[npcId]->_type) {
+	auto npc = dynamic_pointer_cast<Monster>(GClients[npcId]);
+	auto waker = dynamic_pointer_cast<Player>(GClients[wakerId]);
+
+	switch (npc->GetType()) {
 	case MONSTER_TYPE::PASSIVE: {
 		if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
 		TIMER_EVENT randomMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_RANOM_MOVE,0 };
@@ -670,12 +674,11 @@ void WorkerThread::WakeUpNpc(uint32 npcId, uint32 wakerId)
 		break;
 	}
 	case MONSTER_TYPE::AGGRO: {
-		if (GClients[wakerId]->_traceNpcId.load() != -1) break;
+		if (waker->GetTaget() != -1) break;
 		if (!atomic_compare_exchange_strong(&GClients[npcId]->_active, &expected, desired)) return;
-		GClients[wakerId]->_traceNpcId.store(npcId);
+		waker->SetTarget(npcId);
 		TIMER_EVENT aggroMoveEvent{ npcId,chrono::system_clock::now() + 1s,TIMER_EVENT_TYPE::EV_AGGRO_MOVE,wakerId };
 		GTimerJobQueue.push(aggroMoveEvent);
-		//cout << "NPCID : " << npcId << " " << "WakerId : " << wakerId << "\n";
 		break;
 	}
 	}
@@ -686,11 +689,14 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 {
 	if (GClients[npcId]->_die.load()) return;
 
+	auto npc = dynamic_pointer_cast<Monster>(GClients[npcId]);
+	auto attacker = dynamic_pointer_cast<Player>(GClients[playerId]);
+
 	if ((GClients[npcId]->_hp -= PLAYER_OFFENSIVE) <= 0) {
 
-		if (GClients[npcId]->_type == MONSTER_TYPE::AGGRO) {
-			if (GClients[playerId]->_traceNpcId.load() == npcId)
-				GClients[playerId]->_traceNpcId.store(-1);
+		if (npc->GetType() == MONSTER_TYPE::AGGRO) {
+			if (attacker->GetTaget()== npcId)
+				attacker->SetTarget(-1);
 		}
 
 		for (int16 dy = -1; dy <= 1; ++dy) {
@@ -739,23 +745,23 @@ void WorkerThread::AttackToNPC(uint32 npcId, uint32 playerId)
 
 
 
-bool CanSee(uint32 from, uint32 to)
+inline bool CanSee(uint32 from, uint32 to)
 {
 	if (abs(GClients[from]->_x - GClients[to]->_x) >= VIEW_RANGE) return false;
 	return abs(GClients[from]->_y - GClients[to]->_y) <= VIEW_RANGE;
 }
 
-bool IsPc(uint32 id)
+inline bool IsPc(uint32 id)
 {
 	return id < MAX_USER;
 }
 
-bool IsNPC(uint32 id)
+inline bool IsNPC(uint32 id)
 {
 	return !IsPc(id);
 }
 
-bool CanAttack(uint32 from, uint32 to)
+inline bool CanAttack(uint32 from, uint32 to)
 {
 	if (abs(GClients[from]->_x - GClients[to]->_x) >= ATTACK_RANGE) return false;
 	return abs(GClients[from]->_y - GClients[to]->_y) <= ATTACK_RANGE;

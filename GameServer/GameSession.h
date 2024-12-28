@@ -33,23 +33,22 @@ public:
 
 extern OVER_EXP GOverExp;
 
-class GameSession : enable_shared_from_this<GameSession>
+class GameSession
 {
 	OVER_EXP _recvOver;
 
 public:
 	GameSession();
-	~GameSession();
+	virtual ~GameSession();
 	
 	static void MakeSessions();
 
 	void RegisteredRecv();
 	void RegisteredSend(void* packet);
 
-	void InitSession();
+	virtual void InitSession() abstract;
 	void DisconnectSession();
-	void Heal();
-
+	
 	void SendMovePacket(uint32 clientId);
 	void SendAddPlayerPacket(uint32 clientId);
 	void SendRemovePlayerPacket(uint32 clientId);
@@ -65,7 +64,6 @@ public:
 public:
 	SOCKET					_socket;
 	SOCKET_STATE			_state;
-	MONSTER_TYPE			_type;
 	uint32					_prevRemainData;
 	uint32					_id;
 	char					_name[NAME_SIZE];
@@ -81,8 +79,6 @@ public:
 	unordered_set<uint32>	_viewList;
 	atomic_bool				_active;
 	atomic_bool				_attack;
-	vector<NODE>			_astarPath;
-	atomic_int				_traceNpcId;
 
 	mutex					_socketStateLock;
 	mutex					_viewListLock;
@@ -90,6 +86,40 @@ public:
 
 private:
 	USE_LOCK;
+};
+
+class Player : public GameSession
+{
+	atomic_int				_traceNpcId;
+	
+public:
+	Player() : _traceNpcId(-1) {}
+	~Player() {}
+
+public:
+	void		InitSession() override;
+public:
+	atomic_int	GetTaget() { return _traceNpcId.load(); }
+	void		SetTarget(int id) { _traceNpcId.store(id); }
+	void		Heal();
+};
+
+class Monster : public GameSession
+{
+	MONSTER_TYPE			_type;
+	vector<NODE>			_astarPath;
+public:
+	Monster() { _type = AGGRO; _astarPath.clear(); }
+	~Monster() {};
+
+public:
+	void InitSession() override;
+
+public:
+	MONSTER_TYPE GetType() { return _type; }
+	void SetType(MONSTER_TYPE type) { _type = type; }
+	vector<NODE>& GetPath() { return _astarPath; }
+	void SetPath(vector<NODE> path) { _astarPath = path; }
 };
 
 extern array<shared_ptr<GameSession>, MAX_USER + MAX_NPC> GClients;
